@@ -40,5 +40,5 @@ imported, so make sure to save raw formats as well*
 
 ## References
 
-* (Collada importer overview)[http://www.wazim.com/Collada_Tutorial_1.htm]
-* (Inverse Kinematics)[http://www.darwin3d.com/gdm1998.htm]
+* [Collada importer overview](http://www.wazim.com/Collada_Tutorial_1.htm)
+* [Inverse Kinematics](http://www.darwin3d.com/gdm1998.htm)
