@@ -23,7 +23,7 @@ format allows for a smaller file footprint, and lends itself to a being used in
 a geometry shader. *Due to optimizations of meshes collada files cannot be
 imported, so make sure to save raw formats as well*
 
-## Objectives
+## Milestones 
 
 * Create an OpenGL context capable of displaying cubes.
 * Enable the user to navigate 3D space.
