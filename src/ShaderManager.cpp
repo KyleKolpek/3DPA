@@ -1,5 +1,5 @@
 #include <iostream>
-#include "shaderManager.h"
+#include "ShaderManager.h"
 
 using namespace std;
 

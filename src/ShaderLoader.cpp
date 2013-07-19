@@ -2,7 +2,7 @@
 // http://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/loading.php
 #include <fstream>
 #include <iostream>
-#include "shaderLoader.h"
+#include "ShaderLoader.h"
 
 using namespace std;
 ShaderLoader::ShaderLoader():

@@ -4,7 +4,7 @@
 #include <cstdarg>
 #include <map>
 #include <string>
-#include "shaderLoader.h"
+#include "ShaderLoader.h"
 #include "stdgl.h"
 
 /***************************************************************************//**
