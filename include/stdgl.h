@@ -1,6 +1,7 @@
 #ifndef STDGL_H
 #define STDGL_H
 
+#include "Config.h"
 /***************************************************************************//**
  * Manages cross-platform OpenGL includes.
  * SFML provides this functionality, but there may be times when you want to
