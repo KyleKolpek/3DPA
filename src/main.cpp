@@ -1,9 +1,11 @@
 /* Adapted from code on http://www.opengl.org/wiki/ */
 #include <stdio.h>
 #include <stdlib.h>
-#include <GL/glew.h>
- 
+#include <stdgl.h>
 #include <SDL.h>
+#include "ShaderManager.h"
+#include "Config.h"
+
 #define PROGRAM_NAME "3D Programmer Art"
  
 /* A simple function that prints a message, the error code returned by SDL,
@@ -37,6 +39,7 @@ int main(int argc, char *argv[])
     SDL_Window *mainwindow;    /* Our window handle */
     SDL_GLContext maincontext; /* Our opengl context handle */
     SDL_Event event;           /* SDL Event container */
+    ShaderManager sm(SHADER_DIR);
     bool quit = false;
  
     if (SDL_Init(SDL_INIT_VIDEO) < 0) /* Initialize SDL's Video subsystem */
@@ -55,8 +58,14 @@ int main(int argc, char *argv[])
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
  
     /* Create our window centered at 512x512 resolution */
-    mainwindow = SDL_CreateWindow(PROGRAM_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        512, 512, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    mainwindow = SDL_CreateWindow(PROGRAM_NAME,
+                                  SDL_WINDOWPOS_CENTERED,
+                                  SDL_WINDOWPOS_CENTERED,
+                                  512,
+                                  512,
+                                  SDL_WINDOW_OPENGL |
+                                  SDL_WINDOW_SHOWN |
+                                  SDL_WINDOW_RESIZABLE);
     if (!mainwindow) /* Die if creation failed */
         sdldie("Unable to create window");
     checkSDLError(__LINE__);
@@ -75,10 +84,9 @@ int main(int argc, char *argv[])
  
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
- 
-    
 
-    glClearColor ( 0.0, 0.0, 0.0, 0.0 );
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+
     /* GAME LOOP */
     while(!quit)
     {
@@ -91,10 +99,21 @@ int main(int argc, char *argv[])
             switch(event.type)
             {
                 case SDL_MOUSEBUTTONDOWN:
-                    glClearColor ( 1.0, 0.0, 0.0, 0.0 );
+                    glClearColor(1.0, 0.0, 0.0, 0.0);
                     break;
                 case SDL_MOUSEBUTTONUP:
-                    glClearColor ( 0.0, 0.0, 0.0, 0.0 );
+                    glClearColor(0.0, 0.0, 0.0, 0.0);
+                    break;
+                case SDL_WINDOWEVENT:
+                    switch(event.window.event)
+                    {
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                            glViewport(0,
+                                       0,
+                                       event.window.data1,
+                                       event.window.data2);
+                            break;
+                    }
                     break;
                 case SDL_QUIT:
                     quit = true;
