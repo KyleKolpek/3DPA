@@ -11,19 +11,19 @@
 class Updatable
 {
 public:
-	/***********************************************************************//**
-	 * Virtual destructor.
-	 **************************************************************************/
+    /***********************************************************************//**
+     * Virtual destructor.
+     **************************************************************************/
     virtual ~Updatable();
 
-	/***********************************************************************//**
-	 * Handles input and updates the object.
-	 * \param[in] sec
-	 *     The number of seconds since the last update.
-	 * \param[in] input
-	 *     An input object holding any given user input.
-	 **************************************************************************/
-	virtual void update(float sec, sf::Input const &input) = 0;
+    /***********************************************************************//**
+     * Handles input and updates the object.
+     * \param[in] sec
+     *     The number of seconds since the last update.
+     * \param[in] input
+     *     An input object holding any given user input.
+     **************************************************************************/
+    virtual void update(float sec, sf::Input const &input) = 0;
 };
 
 #endif
