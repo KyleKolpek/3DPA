@@ -15,8 +15,8 @@ Camera::Camera():
 }
 
 Camera::Camera(glm::vec3 const &eye,
-        	   glm::vec3 const &at,
-        	   glm::vec3 const &up):
+               glm::vec3 const &at,
+               glm::vec3 const &up):
     eye(eye),
     at(at),
     up(up),
