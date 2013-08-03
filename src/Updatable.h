@@ -2,7 +2,6 @@
 #define UPDATABLE_H
 
 #include "stdgl.h"
-#include <SFML/Window.hpp>
 
 /***************************************************************************//**
  * Allows an object to be updated.
@@ -23,7 +22,7 @@ public:
      * \param[in] input
      *     An input object holding any given user input.
      **************************************************************************/
-    virtual void update(float sec, sf::Input const &input) = 0;
+    virtual void update(float sec) = 0;
 };
 
 #endif

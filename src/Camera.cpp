@@ -1,7 +1,6 @@
 #include "Camera.h"
 #include "GLM/gtc/matrix_transform.hpp"
 #include <iostream>
-#include <SFML/System.hpp>
 
 float Camera::camSpeed(25.0);
 
@@ -98,7 +97,7 @@ void Camera::perspective(float fov, float aspect, float zNear, float zFar)
     projMatrix = glm::perspective(fov, aspect, zNear, zFar);
 }
 
-void Camera::update(float sec, sf::Input const &input)
+void Camera::update(float sec)
 {
     // ADD CAMERA MOVEMENT HERE
     float cameraMoveDistance = camSpeed * sec;

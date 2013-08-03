@@ -139,10 +139,8 @@ public:
      * Update the camera for certain actions
      * \param[in] sec
      *     Time since last update
-     * \param[in] &input
-     *     SFML Input from user (Keyboard, mouse, joystick)
      *************************************************************************/
-    void update(float sec, sf::Input const &input);
+    void update(float sec);
 
 private:
     glm::vec3 eye;          /** Where the camera looks from            */
