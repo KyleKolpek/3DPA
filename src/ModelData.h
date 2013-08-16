@@ -2,6 +2,7 @@
 #define MODELDATA_H
 
 #include "stdgl.h"
+
 /***************************************************************************//**
  * Storage class for model data.
  * Holds raw data. To be filled by other tools for loading models from files or
@@ -36,12 +37,17 @@ public:
     int textureCount;
 
     /***********************************************************************//**
-     * Holds texture image information.
+     * Holds texture image information on the GPU.
      **************************************************************************/    
     GLuint *textures;
 
     /***********************************************************************//**
      * Holds the vertex data for the model.
+     **************************************************************************/
+    float *vertexData;
+
+    /***********************************************************************//**
+     * Holds the vertex data for the model on the GPU.
      **************************************************************************/
     GLuint vertexBuffer;
 };
