@@ -1,6 +1,7 @@
 #include <iostream>
 #include "ShaderManager.h"
 
+#define DEBUG_SHADERS
 using namespace std;
 
 ShaderManager::ShaderManager():

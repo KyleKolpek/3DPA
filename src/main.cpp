@@ -1,10 +1,11 @@
 /* Adapted from code on http://www.opengl.org/wiki/ */
 #include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdgl.h>
 #include <SDL.h>
-#include "ShaderManager.h"
 #include "Config.h"
+#include "Cube.h"
 
 #define PROGRAM_NAME "3D Programmer Art"
  
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
     SDL_Window *mainwindow;    /* Our window handle */
     SDL_GLContext maincontext; /* Our opengl context handle */
     SDL_Event event;           /* SDL Event container */
-    ShaderManager sm(SHADER_DIR);
+    GLuint vao;                /* Vertex Array Object */
     bool quit = false;
  
     if (SDL_Init(SDL_INIT_VIDEO) < 0) /* Initialize SDL's Video subsystem */
@@ -55,7 +56,7 @@ int main(int argc, char *argv[])
     /* Turn on double buffering with a 24bit Z buffer.
      * You may need to change this to 16 or 32 for your system */
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
  
     /* Create our window centered at 512x512 resolution */
     mainwindow = SDL_CreateWindow(PROGRAM_NAME,
@@ -69,28 +70,45 @@ int main(int argc, char *argv[])
     if (!mainwindow) /* Die if creation failed */
         sdldie("Unable to create window");
     checkSDLError(__LINE__);
- 
+
     /* Create our opengl context and attach it to our window */
     maincontext = SDL_GL_CreateContext(mainwindow);
     checkSDLError(__LINE__);
 
     /* Initialize GLEW */
+    glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if (GLEW_OK != err)
     {
         /* Problem: glewInit failed, something is seriously wrong. */
         fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
     }
+    
+    // Gen Vertex Array Object
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    while(GLenum e = glGetError())
+    {
+        std::cerr << "GL Error: " << std::hex << e << std::endl;
+    }
+    // Create a cube
+    Cube cube(1,1,1,1);
+
+    // Disable Culling
+    glDisable(GL_CULL_FACE);
  
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
+    glViewport(0, 0, 512, 512);
 
     /* GAME LOOP */
     while(!quit)
     {
         /* Clear our buffer with a black background */
+        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /* Poll events */
         while(SDL_PollEvent(&event))
@@ -98,12 +116,6 @@ int main(int argc, char *argv[])
             /* Handle events */
             switch(event.type)
             {
-                case SDL_MOUSEBUTTONDOWN:
-                    glClearColor(1.0, 0.0, 0.0, 0.0);
-                    break;
-                case SDL_MOUSEBUTTONUP:
-                    glClearColor(0.0, 0.0, 0.0, 0.0);
-                    break;
                 case SDL_WINDOWEVENT:
                     switch(event.window.event)
                     {
@@ -120,8 +132,11 @@ int main(int argc, char *argv[])
                     break;
             }
         }
-        glClear ( GL_COLOR_BUFFER_BIT );
-
+        cube.draw();
+        while(GLenum e = glGetError())
+        {
+            std::cerr << "GL Error: " << std::hex << e << std::endl;
+        }
         /* Swap our back buffer to the front */
         SDL_GL_SwapWindow(mainwindow);
     }

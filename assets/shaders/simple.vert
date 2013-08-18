@@ -1,8 +1,8 @@
 #version 120
 
-attribute vec2 position;
+attribute vec3 vertexPosition;
 
 void main(void)
 {
-    gl_Position = vec4(position, 0.75, 1.0); 
+    gl_Position = vec4(vertexPosition, 1.0); 
 }

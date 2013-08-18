@@ -5,6 +5,17 @@ add_library(ShaderManager
             ShaderLoader.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} ShaderManager)
 
+# Compile Drawable
+add_library(Drawable
+            Drawable.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Drawable)
+
+# Compile Cube
+add_library(Cube
+            Cube.cpp)
+target_link_libraries(Cube ShaderManager Drawable)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
+
 # Compile SOIL
 add_subdirectory(SOIL)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL)
