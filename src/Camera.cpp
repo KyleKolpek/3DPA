@@ -102,7 +102,7 @@ void Camera::update(float sec)
     // ADD CAMERA MOVEMENT HERE
     float cameraMoveDistance = camSpeed * sec;
     
-    if( input.IsKeyDown(sf::Key::Left ) )
+    /*if( input.IsKeyDown(sf::Key::Left ) )
     {
         moveEye(glm::vec3( cameraMoveDistance*(-1.0), 0.0, 0.0 ));
         moveAt(glm::vec3( cameraMoveDistance*(-1.0), 0.0, 0.0 ));
@@ -129,5 +129,5 @@ void Camera::update(float sec)
     else if( input.IsKeyDown(sf::Key::PageDown) )
     {
         moveTowardsAt( cameraMoveDistance*(-1.0) );
-    }
+    }*/
 }
