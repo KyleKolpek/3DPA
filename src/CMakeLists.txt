@@ -10,6 +10,17 @@ add_library(Drawable
             Drawable.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Drawable)
 
+# Compile Updatable
+add_library(Updatable
+            Updatable.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Updatable)
+
+# Compile Camera
+add_library(Camera
+            Camera.cpp)
+target_link_libraries(Camera Updatable)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Camera)
+
 # Compile Cube
 add_library(Cube
             Cube.cpp)
