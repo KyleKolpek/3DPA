@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
 
     // Disable Culling
     //glDisable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
  
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
@@ -132,6 +133,35 @@ int main(int argc, char *argv[])
                                        0,
                                        event.window.data1,
                                        event.window.data2);
+                            break;
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    switch(event.key.keysym.sym)
+                    {
+                        case SDLK_UP:
+                            vp.getCurrentCamera().moveEye(
+                                glm::vec3(0.0, 0.05, 0.0));
+                            vp.getCurrentCamera().moveAt(
+                                glm::vec3(0.0, 0.05, 0.0));
+                            break;
+                        case SDLK_DOWN:
+                            vp.getCurrentCamera().moveEye(
+                                glm::vec3(0.0, -0.05, 0.0));
+                            vp.getCurrentCamera().moveAt(
+                                glm::vec3(0.0, -0.05, 0.0));
+                            break;
+                        case SDLK_LEFT:
+                            vp.getCurrentCamera().moveEye(
+                                glm::vec3(-0.05, 0.0, 0.0));
+                            vp.getCurrentCamera().moveAt(
+                                glm::vec3(-0.05, 0.0, 0.0));
+                            break;
+                        case SDLK_RIGHT:
+                            vp.getCurrentCamera().moveEye(
+                                glm::vec3(0.05, 0.0, 0.0));
+                            vp.getCurrentCamera().moveAt(
+                                glm::vec3(0.05, 0.0, 0.0));
                             break;
                     }
                     break;

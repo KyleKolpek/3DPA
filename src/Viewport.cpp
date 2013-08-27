@@ -16,7 +16,7 @@ Viewport::~Viewport()
 {
 }
 
-Camera const& Viewport::getCurrentCamera()
+Camera& Viewport::getCurrentCamera()
 {
     return camera;
 }

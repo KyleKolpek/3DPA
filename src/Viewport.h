@@ -8,7 +8,7 @@ class Viewport
 public:
     Viewport(int width, int height);
     ~Viewport();
-    Camera const& getCurrentCamera();
+    Camera& getCurrentCamera();
 protected:
     Camera camera;
     int width;
