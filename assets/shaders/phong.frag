@@ -2,6 +2,7 @@
 
 varying vec3 normal;
 varying vec3 cameraSpacePos;
+varying vec3 fragColor;
 
 vec3 calcSpecular(vec3 l, vec3 n, vec3 v, vec3 cL, vec3 cS, float p)
 {
@@ -17,8 +18,8 @@ vec3 calcDiffuse(vec3 l, vec3 n, vec3 cL, vec3 cD)
 void main(void)
 {
     vec3 lightDirection = normalize(vec3(-1.0, -0.5, -1.0));
-    vec3 objectColor    = vec3(1.0, 1.0, 1.0);
-    vec3 ambientColor   = vec3(0.3, 0.0, 0.0);
+    vec3 objectColor    = fragColor;
+    vec3 ambientColor   = vec3(0.5, 0.5, 0.5);
     vec3 lightColor     = vec3(0.3, 0.3, 0.3);
     vec3 specularColor  = vec3(1.0, 1.0, 1.0);
 

@@ -37,8 +37,8 @@ void Renderer::render()
             mit != models.end();
             mit++)
         {
-            (*mit)->prepareDraw();
-            
+            GLuint program = (*mit)->loadShader();
+            glUseProgram(program);
             // Calculate MV matrix and get projection matrix
             glm::mat4 MV   = (*vit)->getCurrentCamera().getViewMatrix() * 
                              //mit->modelMatrix;
@@ -46,9 +46,9 @@ void Renderer::render()
             glm::mat4 proj = (*vit)->getCurrentCamera().getProjectionMatrix();
 
             // Set uniforms
-            GLint mvLoc   = glGetUniformLocation((*mit)->program, "modelView");
-            GLint nmvLoc  = glGetUniformLocation((*mit)->program, "normalModelView");
-            GLint projLoc = glGetUniformLocation((*mit)->program, "projection");
+            GLint mvLoc   = glGetUniformLocation(program, "modelView");
+            GLint nmvLoc  = glGetUniformLocation(program, "normalModelView");
+            GLint projLoc = glGetUniformLocation(program, "projection");
 
             if(mvLoc != -1)
             {
@@ -80,7 +80,8 @@ void Renderer::render()
                 cerr << "Error: Cannot find projection location" << endl;
                 return;
             }
-            (*mit)->draw();
+            (*mit)->draw(program);
+            glUseProgram(0);
         }
     }
 }

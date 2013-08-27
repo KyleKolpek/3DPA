@@ -31,6 +31,18 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
 add_subdirectory(SOIL)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL)
 
+# Compile Viewport
+add_library(Viewport
+            Viewport.cpp)
+target_link_libraries(Viewport Camera)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Viewport)
+
+# Compile Renderer
+add_library(Renderer
+            Renderer.cpp)
+target_link_libraries(Renderer Cube Viewport)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Renderer)
+
 # Add the executable
 add_executable(../3DPA main.cpp)
 target_link_libraries(../3DPA ${LIBS} ${INTERNAL_LIBS})

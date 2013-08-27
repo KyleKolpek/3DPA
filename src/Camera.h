@@ -36,13 +36,13 @@ public:
      * Get the view matrix
      * Returns the view matrix of the camera
      *************************************************************************/
-    glm::mat4 getViewMatrix();
+    glm::mat4 getViewMatrix() const;
 
     /**********************************************************************//**
      * Get the projection matrix
      * Returns the projection matrix of the camera
      *************************************************************************/
-    glm::mat4 getProjectionMatrix();
+    glm::mat4 getProjectionMatrix() const;
     
     // These set the 3 vectors
 
@@ -108,19 +108,19 @@ public:
      * Get the at vector
      * Returns the location the camera is looking at as glm::vec3
      *************************************************************************/
-    glm::vec3 getAt();
+    glm::vec3 getAt() const;
 
     /**********************************************************************//**
      * Get the eye vector
      * Returns the location of the eye of the camera as glm::vec3
      *************************************************************************/
-    glm::vec3 getEye();
+    glm::vec3 getEye() const;
     
     /**********************************************************************//**
      * Get the up vector
      * Returns the location of the up vector as glm::vec3
      *************************************************************************/
-    glm::vec3 getUp();
+    glm::vec3 getUp() const;
 
     /**********************************************************************//**
      * Generate and set the projection matrix

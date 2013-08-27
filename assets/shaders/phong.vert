@@ -6,15 +6,17 @@ uniform mat4 projection;
 
 attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
+attribute vec3 vertexColor;
 
 varying vec3 normal;
 varying vec3 cameraSpacePos;
+varying vec3 fragColor;
 
 void main(void)
 {
 	vec4 p = modelView * vec4(vertexPosition, 1.0);
 	gl_Position = projection * p;
-
 	cameraSpacePos = p.xyz;
 	normal = normalize(normalModelView * vec4(vertexNormal, 0.0)).xyz;
+    fragColor = vertexColor;
 }

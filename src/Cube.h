@@ -11,7 +11,8 @@ class Cube: public Drawable
 public:
     Cube(int x, int y, int z, int size);
     ~Cube();
-    void draw();
+    GLuint loadShader();
+    void draw(GLuint program);
 protected:
     int x;
     int y;

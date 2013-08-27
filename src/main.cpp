@@ -6,6 +6,9 @@
 #include <SDL.h>
 #include "Config.h"
 #include "Cube.h"
+#include "Renderer.h"
+#include "Viewport.h"
+
 
 #define PROGRAM_NAME "3D Programmer Art"
  
@@ -92,17 +95,22 @@ int main(int argc, char *argv[])
     {
         std::cerr << "GL Error: " << std::hex << e << std::endl;
     }
-    // Create a cube
-    Cube cube(1,1,1,1);
 
     // Disable Culling
-    glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
  
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glViewport(0, 0, 512, 512);
+
+    // Setup scene
+    Cube cube(1,1,1,1);
+    Viewport vp(512, 512);
+    Renderer r;
+    r.addViewport(&vp);
+    r.addModel(&cube);
 
     /* GAME LOOP */
     while(!quit)
@@ -132,7 +140,7 @@ int main(int argc, char *argv[])
                     break;
             }
         }
-        cube.draw();
+        r.render();
         while(GLenum e = glGetError())
         {
             std::cerr << "GL Error: " << std::hex << e << std::endl;

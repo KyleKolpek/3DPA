@@ -25,12 +25,12 @@ Camera::Camera(glm::vec3 const &eye,
     viewMatrix = glm::lookAt(eye, at, up);
 }
 
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix() const
 {
     return viewMatrix;
 }
 
-glm::mat4 Camera::getProjectionMatrix()
+glm::mat4 Camera::getProjectionMatrix() const
 {
     return projMatrix;
 }
@@ -77,17 +77,17 @@ void Camera::moveTowardsAt(float distance)
     viewMatrix = glm::lookAt(this->eye, this->at, this->up);
 }
 
-glm::vec3 Camera::getAt()
+glm::vec3 Camera::getAt() const
 {
     return at;
 }
 
-glm::vec3 Camera::getEye()
+glm::vec3 Camera::getEye() const
 {
     return eye;
 }
 
-glm::vec3 Camera::getUp()
+glm::vec3 Camera::getUp() const
 {
     return up;
 }

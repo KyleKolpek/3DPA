@@ -18,11 +18,20 @@ public:
     virtual ~Drawable();
 
     /***********************************************************************//**
+     * Loads a shader using shaderManager.
+     * \return
+     *     A reference to the compiled shader program.
+     **************************************************************************/
+     virtual GLuint loadShader() = 0;
+
+    /***********************************************************************//**
      * Draws the object.
      * Requires an OpenGL context to be initialized and draws using the shaders
      * contained in program.
+     * \param[in] program
+     *     The shader program to be used when drawing.
      **************************************************************************/
-    virtual void draw() = 0;
+    virtual void draw(GLuint program) = 0;
 
     /***********************************************************************//**
      * Sets the shader manager to be used to create/retrieve programs.
