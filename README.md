@@ -25,7 +25,7 @@ imported, so make sure to save raw formats as well*
 
 ## Milestones 
 
-* Create an OpenGL context capable of displaying cubes.
+* ~~Create an OpenGL context capable of displaying cubes.~~
 * Enable the user to navigate 3D space.
 * Enable the user to add and delete cubes.
 * Enable the user to choose colors for cubes.
@@ -42,3 +42,4 @@ imported, so make sure to save raw formats as well*
 
 * [Collada importer overview](http://www.wazim.com/Collada_Tutorial_1.htm)
 * [Inverse Kinematics](http://www.darwin3d.com/gdm1998.htm)
+* [Input Management](http://www.gamedev.net/blog/355/entry-2250186-designing-a-robust-input-handling-system-for-games/)
