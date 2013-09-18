@@ -64,8 +64,9 @@ public:
 private:
     int32_t convertTo21BitAndXorMSB(int32_t number) const
     {
-        // Move the MSB to it's new position (21st bit) then
-        // Flip the new MSB and keep the remaining 20 LSBs
+        // Move the MSB to it's new position (21st bit) then flip the new MSB
+        // and keep the remaining 20 LSBs.
+        // NOTE: This *should* effictively round numbers to a 21 bit range.
         return (((number >> 32 - BITS_PER_DIMENSION)
                & MSB_MASK) ^ MSB_MASK) | (number & LSBS_MASK);
 
