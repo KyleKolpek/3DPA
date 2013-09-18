@@ -67,6 +67,8 @@ private:
         // Move the MSB to it's new position (21st bit) then flip the new MSB
         // and keep the remaining 20 LSBs.
         // NOTE: This *should* effictively round numbers to a 21 bit range.
+        // NOTE: Using a union of uint32_t and int32_t and adding ~2^20 may work
+        // faster. It may not be as robust a solution though. 
         return (((number >> 32 - BITS_PER_DIMENSION)
                & MSB_MASK) ^ MSB_MASK) | (number & LSBS_MASK);
 
