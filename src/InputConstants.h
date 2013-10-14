@@ -6,14 +6,14 @@ namespace Input
 
 enum Action
 {
-    ACT_CAMERA_MOVE_UP,
-    ACT_CAMERA_MOVE_DOWN,
-    ACT_CAMERA_MOVE_LEFT,
-    ACT_CAMERA_MOVE_RIGHT
 };
 
 enum State
 {
+    STATE_CAMERA_MOVE_UP,
+    STATE_CAMERA_MOVE_DOWN,
+    STATE_CAMERA_MOVE_LEFT,
+    STATE_CAMERA_MOVE_RIGHT
 };
 
 enum Range
