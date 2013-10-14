@@ -5,7 +5,6 @@
 #include <map>
 #include <set>
 #include "InputConstants.h"
-#include "InputMap.h"
 
 class InputContext;
 
