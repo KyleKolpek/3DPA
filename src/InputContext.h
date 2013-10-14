@@ -10,9 +10,9 @@ class InputContext
 public:
     InputContext();
     ~InputContext();
-    bool getMappedAction(RawButton button, Action& action) const;
-    bool getMappedState(RawButton button, State& state) const;
-    bool getMappedRange(RawAxis axis, Range& range) const;
+    bool getMappedAction(Input::RawButton button, Input::Action& action) const;
+    bool getMappedState(Input::RawButton button, Input::State& state) const;
+    bool getMappedRange(Input::RawAxis axis, Input::Range& range) const;
 protected:
 private:
     std::map<Input::RawButton, Input::Action> actions;

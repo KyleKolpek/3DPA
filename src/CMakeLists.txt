@@ -43,6 +43,12 @@ add_library(Renderer
 target_link_libraries(Renderer Cube Viewport)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Renderer)
 
+# Compile Input
+add_library(Input
+            InputContext.cpp
+            InputMapper.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Input)
+
 # Add the executable
 add_executable(../3DPA main.cpp)
 target_link_libraries(../3DPA ${LIBS} ${INTERNAL_LIBS})

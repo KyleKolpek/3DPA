@@ -7,7 +7,7 @@ InputContext::InputContext()
 {
     // Set up mappings here.
     // TODO: change this to take input from a file
-    ActionMap[RAW_BUTTON_W] = ACT_CAMERA_MOVE_UP;
+    actions[SDLK_UP] = ACT_CAMERA_MOVE_UP;
 }
 
 InputContext::~InputContext()

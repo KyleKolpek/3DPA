@@ -1,7 +1,7 @@
 #ifndef INPUTCONSTANTS_H
 #define INPUTCONSTANTS_H
 
-namespace Inputs
+namespace Input
 {
 
 enum Action

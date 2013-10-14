@@ -1,8 +1,9 @@
-#include <exception>
+#include <stdexcept>
 #include "InputMapper.h"
 #include "InputContext.h"
 
 using namespace std;
+using namespace Input;
 
 void InputMap::removeAction(Action action)
 {
@@ -39,7 +40,7 @@ void InputMapper::pushContext(const string& contextName)
         inputContexts.find(contextName);
     if(i == inputContexts.end())
     {
-        throw exception("Invalid InputContext pushed.");
+        throw runtime_error("Invalid InputContext pushed.");
     }
     activeContexts.push_front(i->second);
 }
@@ -48,7 +49,7 @@ void InputMapper::popContext()
 {
     if(activeContexts.empty())
     {
-        throw exception("No active InputContexts available to pop.");
+        throw runtime_error("No active InputContexts available to pop.");
     }
     activeContexts.pop_front();
 }
@@ -68,7 +69,7 @@ void InputMapper::processButtonInput(RawButton button,
     // Action
     if(pressed && !previouslyPressed)
     {
-        if(getActionFromContext(button, action))
+        if(getActionFromActiveContexts(button, action))
         {
             currentInput.actions.insert(action);
             return;
@@ -77,7 +78,7 @@ void InputMapper::processButtonInput(RawButton button,
 
     if(pressed)
     {
-        if(getStateFromContext(button, state))
+        if(getStateFromActiveContexts(button, state))
         {
             currentInput.states.insert(state);
             return;
@@ -160,12 +161,12 @@ void InputMapper::clearInputPerButton(RawButton button)
     
     // Do we need this for actions since actions are removed via reset()?
     // This may affect actions bound to multiple buttons (how?)
-    if(getActionFromContext(button, action))
+    if(getActionFromActiveContexts(button, action))
     {
         currentInput.removeAction(action);
     }
 
-    if(getStateFromContext(button, state))
+    if(getStateFromActiveContexts(button, state))
     {
         currentInput.removeState(state);
     }

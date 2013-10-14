@@ -4,20 +4,22 @@
 #include <list>
 #include <map>
 #include <set>
+#include <string>
 #include "InputConstants.h"
+#include "RawInputConstants.h"
 
 class InputContext;
 
 class InputMap
 {
 public:
-    std::set<Action> actions;
-    std::set<State> states;
-    std::map<Range, float> ranges;
+    std::set<Input::Action> actions;
+    std::set<Input::State> states;
+    std::map<Input::Range, float> ranges;
 
-    void removeAction(Action action);
-    void removeState(State state);
-    void removeRange(Range range);
+    void removeAction(Input::Action action);
+    void removeState(Input::State state);
+    void removeRange(Input::Range range);
 };
 
 class InputMapper
@@ -29,20 +31,22 @@ public:
     // NOTE: This may be better represented as an interface
     typedef void (*InputCallback)(InputMap&);
     void addCallback(InputCallback callback, int priority);
-    void pushContext(const string& contextName);
+    void pushContext(const std::string& contextName);
     void popContext();
 
-    bool getActionFromActiveContexts(RawButton button, Action& action) const;
-    bool getStateFromActiveContexts(RawButton button, State& state) const;
+    bool getActionFromActiveContexts(Input::RawButton button,
+                                     Input::Action& action) const;
+    bool getStateFromActiveContexts(Input::RawButton button,
+                                    Input::State& state) const;
 
-    void processButtonInput(RawButton button,
+    void processButtonInput(Input::RawButton button,
                             bool pressed,
                             bool previouslyPressed);
-    void processAxisInput(RawAxis axis, float value);
+    void processAxisInput(Input::RawAxis axis, float value);
 
     void dispatch() const;
     void reset();
-    void clearInputPerButton(RawButton button);
+    void clearInputPerButton(Input::RawButton button);
 
 protected:
 private:
