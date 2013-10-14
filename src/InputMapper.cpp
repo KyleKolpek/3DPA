@@ -22,7 +22,7 @@ void InputMap::removeRange(Range range)
 
 InputMapper::InputMapper()
 {
-    inputContexts["test"] = new InputContext();
+    inputContexts["maincontext"] = new InputContext();
 }
 
 InputMapper::~InputMapper()
@@ -59,15 +59,16 @@ void InputMapper::addCallback(InputCallback callback, int priority)
     callbacks.insert(pair<int, InputCallback>(priority, callback));
 }
 
+// NOTE: we could change this function to allow events to occur on KEYUP
 void InputMapper::processButtonInput(RawButton button,
                                      bool pressed,
-                                     bool previouslyPressed)
+                                     bool repeat)
 {
     Action action;
     State state;
 
-    // Action
-    if(pressed && !previouslyPressed)
+    // Action: If a key is pressed for the first time
+    if(pressed && !repeat)
     {
         if(getActionFromActiveContexts(button, action))
         {
@@ -76,6 +77,7 @@ void InputMapper::processButtonInput(RawButton button,
         }
     }
 
+    // State: If a key is down
     if(pressed)
     {
         if(getStateFromActiveContexts(button, state))
@@ -84,7 +86,8 @@ void InputMapper::processButtonInput(RawButton button,
             return;
         }
     }
-
+    
+    // If a key is up, then we clear the actions and states tied to it
     clearInputPerButton(button);
 }
 
@@ -159,7 +162,7 @@ void InputMapper::clearInputPerButton(RawButton button)
     Action action;
     State state;
     
-    // Do we need this for actions since actions are removed via reset()?
+    // Note: Do we need this for actions since actions are removed via reset()?
     // This may affect actions bound to multiple buttons (how?)
     if(getActionFromActiveContexts(button, action))
     {

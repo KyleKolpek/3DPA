@@ -8,6 +8,9 @@ InputContext::InputContext()
     // Set up mappings here.
     // TODO: change this to take input from a file
     actions[SDLK_UP] = ACT_CAMERA_MOVE_UP;
+    actions[SDLK_DOWN] = ACT_CAMERA_MOVE_DOWN;
+    actions[SDLK_LEFT] = ACT_CAMERA_MOVE_LEFT;
+    actions[SDLK_RIGHT] = ACT_CAMERA_MOVE_RIGHT;
 }
 
 InputContext::~InputContext()

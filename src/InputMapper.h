@@ -28,8 +28,10 @@ public:
     InputMapper();
     ~InputMapper();
     
-    // NOTE: This may be better represented as an interface
+    // NOTE: This may be better represented as an interface than a function
+    // pointer
     typedef void (*InputCallback)(InputMap&);
+
     void addCallback(InputCallback callback, int priority);
     void pushContext(const std::string& contextName);
     void popContext();
@@ -41,7 +43,7 @@ public:
 
     void processButtonInput(Input::RawButton button,
                             bool pressed,
-                            bool previouslyPressed);
+                            bool repeat);
     void processAxisInput(Input::RawAxis axis, float value);
 
     void dispatch() const;

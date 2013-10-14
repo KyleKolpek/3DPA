@@ -52,3 +52,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Input)
 # Add the executable
 add_executable(../3DPA main.cpp)
 target_link_libraries(../3DPA ${LIBS} ${INTERNAL_LIBS})
+
+# Add test executable
+add_executable(../3DPAInput InputTest.cpp)
+target_link_libraries(../3DPAInput ${LIBS} ${INTERNAL_LIBS})
