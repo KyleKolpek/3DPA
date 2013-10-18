@@ -49,6 +49,11 @@ add_library(Input
             InputMapper.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Input)
 
+# Compule MortonNumber
+add_library(MortonNumber
+            MortonNumber.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} MortonNumber)
+
 # Add the executable
 add_executable(../3DPA main.cpp)
 target_link_libraries(../3DPA ${LIBS} ${INTERNAL_LIBS})
