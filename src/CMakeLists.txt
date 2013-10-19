@@ -21,11 +21,22 @@ add_library(Camera
 target_link_libraries(Camera Updatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Camera)
 
+# Compule MortonNumber
+add_library(MortonNumber
+            MortonNumber.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} MortonNumber)
+
 # Compile Cube
 add_library(Cube
             Cube.cpp)
 target_link_libraries(Cube ShaderManager Drawable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
+
+# Compile CubeManager
+add_library(CubeManager
+            CubeManager.cpp)
+target_link_libraries(CubeManager Cube MortonNumber)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeManager) 
 
 # Compile SOIL
 add_subdirectory(SOIL)
@@ -48,11 +59,6 @@ add_library(Input
             InputContext.cpp
             InputMapper.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Input)
-
-# Compule MortonNumber
-add_library(MortonNumber
-            MortonNumber.cpp)
-set(INTERNAL_LIBS ${INTERNAL_LIBS} MortonNumber)
 
 # Add the executable
 add_executable(../3DPA main.cpp)

@@ -33,6 +33,7 @@ public:
 
     MortonNumber();
     MortonNumber(uint64_t value);
+    MortonNumber(int32_t x, int32_t y, int32_t z);
     bool operator<(const MortonNumber& m) const;
     void setX(int32_t x);
     void setY(int32_t y);

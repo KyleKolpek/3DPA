@@ -14,6 +14,12 @@ MortonNumber::MortonNumber(uint64_t value):value(value)
 {
 }
 
+MortonNumber::MortonNumber(int32_t x, int32_t y, int32_t z):value(0)
+{
+    setX(x);
+    setY(y);
+    setZ(z);
+}
 bool MortonNumber::operator<(const MortonNumber& m) const
 {
     return value < m.value;

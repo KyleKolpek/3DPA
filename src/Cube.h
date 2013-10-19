@@ -13,11 +13,12 @@ public:
     ~Cube();
     GLuint loadShader();
     void draw(GLuint program);
-protected:
     int x;
     int y;
     int z;
     int size;
+
+private:
     static float vertexData[];
     static int vertexCount;
     GLuint vertexBuffer;
