@@ -4,6 +4,7 @@
 #include <map>
 #include <cstdint>
 #include "Cube.h"
+#include "Drawable.h"
 #include "MortonNumber.h"
 
 class CubeManager: public Drawable

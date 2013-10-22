@@ -85,7 +85,6 @@ CubeManager::CubeManager()
                  GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     setShaderManager(new ShaderManager("../assets/shaders/"));
-
 }
 
 CubeManager::~CubeManager()

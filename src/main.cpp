@@ -6,12 +6,18 @@
 #include <SDL.h>
 #include "Config.h"
 #include "CubeManager.h"
+#include "InputMapper.h"
 #include "Renderer.h"
 #include "Viewport.h"
 
 
 #define PROGRAM_NAME "3D Programmer Art"
  
+void cameraCallback(InputMap& inputs);
+
+Viewport vp(512, 512);
+InputMapper mapper;
+
 /* A simple function that prints a message, the error code returned by SDL,
  * and quits the application */
 void sdldie(const char *msg)
@@ -108,7 +114,10 @@ int main(int argc, char *argv[])
 
     // Setup scene
     CubeManager cm;
-    Viewport vp(512, 512);
+    
+    mapper.pushContext("maincontext");
+    mapper.addCallback(cameraCallback, 0);
+
     Renderer r;
     r.addViewport(&vp);
     r.addModel(&cm);
@@ -136,33 +145,24 @@ int main(int argc, char *argv[])
                             break;
                     }
                     break;
-                case SDL_KEYDOWN:
-                    switch(event.key.keysym.sym)
+                case SDL_KEYUP:
                     {
-                        case SDLK_UP:
-                            vp.getCurrentCamera().moveEye(
-                                glm::vec3(0.0, 0.05, 0.0));
-                            vp.getCurrentCamera().moveAt(
-                                glm::vec3(0.0, 0.05, 0.0));
-                            break;
-                        case SDLK_DOWN:
-                            vp.getCurrentCamera().moveEye(
-                                glm::vec3(0.0, -0.05, 0.0));
-                            vp.getCurrentCamera().moveAt(
-                                glm::vec3(0.0, -0.05, 0.0));
-                            break;
-                        case SDLK_LEFT:
-                            vp.getCurrentCamera().moveEye(
-                                glm::vec3(-0.05, 0.0, 0.0));
-                            vp.getCurrentCamera().moveAt(
-                                glm::vec3(-0.05, 0.0, 0.0));
-                            break;
-                        case SDLK_RIGHT:
-                            vp.getCurrentCamera().moveEye(
-                                glm::vec3(0.05, 0.0, 0.0));
-                            vp.getCurrentCamera().moveAt(
-                                glm::vec3(0.05, 0.0, 0.0));
-                            break;
+                        Input::RawButton button =
+                            static_cast<Input::RawButton>(event.key.keysym.sym);
+
+                        mapper.processButtonInput(button,
+                                                  event.key.state,
+                                                  true);
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    {
+                        Input::RawButton button =
+                            static_cast<Input::RawButton>(event.key.keysym.sym);
+
+                        mapper.processButtonInput(button,
+                                                  event.key.state,
+                                                  event.key.repeat);
                     }
                     break;
                 case SDL_QUIT:
@@ -170,6 +170,11 @@ int main(int argc, char *argv[])
                     break;
             }
         }
+        
+        // Process events based on inputs
+        mapper.dispatch();
+        mapper.reset();
+
         r.render();
         while(GLenum e = glGetError())
         {
@@ -187,3 +192,34 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+void cameraCallback(InputMap& inputs)
+{
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_UP) != inputs.states.end())
+    {
+        vp.getCurrentCamera().moveEye(
+                glm::vec3(0.0, 0.05, 0.0));
+        vp.getCurrentCamera().moveAt(
+                glm::vec3(0.0, 0.05, 0.0));
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_DOWN) != inputs.states.end())
+    {
+        vp.getCurrentCamera().moveEye(
+                glm::vec3(0.0, -0.05, 0.0));
+        vp.getCurrentCamera().moveAt(
+                glm::vec3(0.0, -0.05, 0.0));
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_LEFT) != inputs.states.end())
+    {
+        vp.getCurrentCamera().moveEye(
+                glm::vec3(-0.05, 0.0, 0.0));
+        vp.getCurrentCamera().moveAt(
+                glm::vec3(-0.05, 0.0, 0.0));
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_RIGHT) != inputs.states.end())
+    {
+        vp.getCurrentCamera().moveEye(
+                glm::vec3(0.05, 0.0, 0.0));
+        vp.getCurrentCamera().moveAt(
+                glm::vec3(0.05, 0.0, 0.0));
+    }
+}
