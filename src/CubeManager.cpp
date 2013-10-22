@@ -55,33 +55,13 @@ float CubeManager::vertexData[] = { 0.0,  1.0,  0.0, // BACK  // TOP LEFT VERT
                                     0.0, -1.0,  0.0,
                                     0.0, -1.0,  0.0};
 
-                                              // COLOR (PER INSTANCE)
-float CubeManager::instanceData[] = { 0.1,  0.8,  0.0, // 1
-                                      0.8,  0.0,  0.0, // 2
-                                      0.8,  0.5,  0.0, // 3
-                                      0.0,  0.0,  0.8, // 4
-                                      0.8,  0.8,  0.0, // 5
-                                      0.8,  0.8,  0.8, // 6
-
-                                      0.0,  0.0,  0.0, // 1
-                                      2.0,  2.0,  1.0, // 2
-                                     -2.0,  0.0,  0.0, // 3
-                                     -1.0,  2.0, -2.0, // 4
-                                      2.0, -2.0, -1.0, // 5
-                                     -1.0, -1.0, -1.0};// 6
-
 int CubeManager::vertexCount = 4 * 6;
 
-CubeManager::CubeManager()
+CubeManager::CubeManager():needsUpdated(false)
 {
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData,
-                 GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glGenBuffers(1, &instanceBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(instanceData), instanceData,
                  GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     setShaderManager(new ShaderManager("../assets/shaders/"));
@@ -97,7 +77,13 @@ GLuint CubeManager::loadShader()
 }
 
 void CubeManager::draw(GLuint program)
-{
+{   
+    if(needsUpdated)
+    {
+        populateModelData();
+        needsUpdated = false;
+    }
+
     GLuint vertexPosLoc = glGetAttribLocation(program, "vertexPosition");
     GLuint vertexNormalLoc = glGetAttribLocation(program, "vertexNormal");
     GLuint vertexColorLoc = glGetAttribLocation(program, "vertexColor");
@@ -118,11 +104,16 @@ void CubeManager::draw(GLuint program)
         cerr << "Error: Cannot find vertexColor location" << endl;
         return;
     }
+    if(cubePosLoc == -1)
+    {
+        cerr << "Error: Cannot find cubePos location" << endl;
+        return;
+    }
 
     glEnableVertexAttribArray(vertexPosLoc);
     glEnableVertexAttribArray(vertexNormalLoc);
-    glEnableVertexAttribArray(vertexColorLoc);
     glEnableVertexAttribArray(cubePosLoc);
+    glEnableVertexAttribArray(vertexColorLoc);
 
     // Vertex Data
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -134,36 +125,39 @@ void CubeManager::draw(GLuint program)
 
     // Instance data
     glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-    glVertexAttribPointer(vertexColorLoc, 3, GL_FLOAT, GL_FALSE,
-        3 * sizeof(float), 0);
     glVertexAttribPointer(cubePosLoc, 3, GL_FLOAT, GL_FALSE,
-        3 * sizeof(float), (void *)(6 * 3 * sizeof(float)));
+        6 * sizeof(float), 0);
+    glVertexAttribPointer(vertexColorLoc, 3, GL_FLOAT, GL_FALSE,
+        6 * sizeof(float), (void *)( 3 * sizeof(float)));
     
-    glVertexAttribDivisor(vertexColorLoc, 1);
     glVertexAttribDivisor(cubePosLoc, 1);
+    glVertexAttribDivisor(vertexColorLoc, 1);
 
     // TODO: Change GL_TRIANGLES to account for modelData->vertexType
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, vertexCount, 6);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, vertexCount, cubeMap.size());
     glDisableVertexAttribArray(vertexPosLoc);
     glDisableVertexAttribArray(vertexNormalLoc);
-    glDisableVertexAttribArray(vertexColorLoc);
     glDisableVertexAttribArray(cubePosLoc);
+    glDisableVertexAttribArray(vertexColorLoc);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 bool CubeManager::insert(Cube& cube)
 {
+    needsUpdated = true;
     return cubeMap.insert(
                make_pair(makeKey(cube.x, cube.y, cube.z), cube)).second;
 }
 
 void CubeManager::erase(int x, int y, int z)
 {
+    needsUpdated = true;
     cubeMap.erase(makeKey(x, y, z));
 }
 
 void CubeManager::clear()
 {
+    needsUpdated = true;
     cubeMap.clear();
 }
 
@@ -192,8 +186,8 @@ void CubeManager::populateModelData()
     }
     glGenBuffers(1, &instanceBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-    glBufferData(GL_ARRAY_BUFFER, cubeMap.size() * sizeof(CubePosColor), vertexData,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeMap.size() * sizeof(CubePosColor),
+                 instanceData, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     delete[] instanceData;
 }

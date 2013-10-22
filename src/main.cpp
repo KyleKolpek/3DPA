@@ -114,7 +114,30 @@ int main(int argc, char *argv[])
 
     // Setup scene
     CubeManager cm;
-    
+    Cube a, b, c;
+    a.x = 0;
+    a.y = 0;
+    a.z = 0;
+    a.red   = 1.0;
+    a.green = 0.0;
+    a.blue  = 0.0;
+    b.x = 2;
+    b.y = 2;
+    b.z = -1;
+    b.red   = 0.0;
+    b.green = 1.0;
+    b.blue  = 0.0;
+    c.x = -2;
+    c.y = 0;
+    c.z = 1;
+    c.red   = 0.0;
+    c.green = 0.0;
+    c.blue  = 1.0;
+
+    cm.insert(a);
+    cm.insert(b);
+    cm.insert(c);
+
     mapper.pushContext("maincontext");
     mapper.addCallback(cameraCallback, 0);
 
