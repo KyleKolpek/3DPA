@@ -5,7 +5,7 @@
 #include <stdgl.h>
 #include <SDL.h>
 #include "Config.h"
-#include "Cube.h"
+#include "CubeManager.h"
 #include "Renderer.h"
 #include "Viewport.h"
 
@@ -107,11 +107,11 @@ int main(int argc, char *argv[])
     glViewport(0, 0, 512, 512);
 
     // Setup scene
-    Cube cube(1,1,1,1);
+    CubeManager cm;
     Viewport vp(512, 512);
     Renderer r;
     r.addViewport(&vp);
-    r.addModel(&cube);
+    r.addModel(&cm);
 
     /* GAME LOOP */
     while(!quit)

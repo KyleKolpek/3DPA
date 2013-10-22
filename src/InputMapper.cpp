@@ -162,7 +162,7 @@ void InputMapper::clearInputPerButton(RawButton button)
     Action action;
     State state;
     
-    // Note: Do we need this for actions since actions are removed via reset()?
+    // NOTE: Do we need this for actions since actions are removed via reset()?
     // This may affect actions bound to multiple buttons (how?)
     if(getActionFromActiveContexts(button, action))
     {

@@ -5,7 +5,7 @@
 #include <stdgl.h>
 #include <SDL.h>
 #include "Config.h"
-#include "Cube.h"
+#include "CubeManager.h"
 #include "InputMapper.h"
 #include "Renderer.h"
 #include "Viewport.h"
@@ -113,14 +113,14 @@ int main(int argc, char *argv[])
     glViewport(0, 0, 512, 512);
 
     // Setup scene
-    Cube cube(1,1,1,1);
+    CubeManager cm;
     
     mapper.pushContext("maincontext");
     mapper.addCallback(cameraCallback, 0);
 
     Renderer r;
     r.addViewport(&vp);
-    r.addModel(&cube);
+    r.addModel(&cm);
 
     /* GAME LOOP */
     while(!quit)
@@ -170,7 +170,8 @@ int main(int argc, char *argv[])
                     break;
             }
         }
-
+        
+        // Process events based on inputs
         mapper.dispatch();
         mapper.reset();
 

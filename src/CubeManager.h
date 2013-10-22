@@ -6,7 +6,7 @@
 #include "Cube.h"
 #include "MortonNumber.h"
 
-class CubeManager
+class CubeManager: public Drawable
 {
 public:
     CubeManager();
@@ -17,10 +17,23 @@ public:
     void erase(int x, int y, int z);
     bool insert(Cube& cube);
     void populateModelData();
+    void draw(GLuint program);
+    GLuint loadShader();
 
 private:
+    struct CubePosColor
+    {
+        float position[3];
+        float color[3];
+    };
     MortonNumber makeKey(int x, int y, int z);
     std::map<MortonNumber, Cube> cubeMap;
+    static float vertexData[];
+    static float instanceData[];
+    static int vertexCount;
+    GLuint vertexBuffer;
+    GLuint instanceBuffer;
+
 };
 
 #endif

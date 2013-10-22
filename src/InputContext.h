@@ -19,7 +19,7 @@ private:
     std::map<Input::RawButton, Input::State> states;
     std::map<Input::RawAxis, Input::Range> ranges;
 
-    //std::map<Input::Range, float> sensitivities;
+    std::map<Input::Range, float> sensitivities;
 };
 
 #endif

@@ -4,7 +4,7 @@
 #include <vector>
 
 class Viewport;
-class Cube;
+class CubeManager;
 
 class Renderer
 {
@@ -12,11 +12,11 @@ public:
     Renderer();
     ~Renderer();
     void addViewport(Viewport *v);
-    void addModel(Cube *c);
+    void addModel(CubeManager *c);
     void render();
 protected:
     std::vector<Viewport *> viewports;
-    std::vector<Cube *> models;
+    std::vector<CubeManager *> models;
 };
 
 #endif

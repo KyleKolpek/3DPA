@@ -3,7 +3,7 @@
 #include "stdgl.h"
 
 #include "Viewport.h"
-#include "Cube.h"
+#include "CubeManager.h"
 
 using namespace std;
 
@@ -22,7 +22,7 @@ void Renderer::addViewport(Viewport *v)
     viewports.push_back(v);
 }
 
-void Renderer::addModel(Cube *c)
+void Renderer::addModel(CubeManager *c)
 {
     models.push_back(c);
 }
@@ -33,7 +33,7 @@ void Renderer::render()
         vit != viewports.end();
         vit++)
     {
-        for(vector<Cube*>::iterator mit = models.begin();
+        for(vector<CubeManager*>::iterator mit = models.begin();
             mit != models.end();
             mit++)
         {

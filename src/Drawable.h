@@ -19,6 +19,7 @@ public:
 
     /***********************************************************************//**
      * Loads a shader using shaderManager.
+     * TODO: change this to a field for the shader name and let renderer load it
      * \return
      *     A reference to the compiled shader program.
      **************************************************************************/
@@ -40,7 +41,7 @@ public:
      * \param[in] shaderManager
      *     The ShaderManager to be stored.
      **************************************************************************/
-    virtual void setShaderManager(ShaderManager *shaderManager);
+    void setShaderManager(ShaderManager *shaderManager);
 
 protected:
     /***********************************************************************//**
