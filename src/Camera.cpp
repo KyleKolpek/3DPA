@@ -77,6 +77,14 @@ void Camera::moveTowardsAt(float distance)
     viewMatrix = glm::lookAt(this->eye, this->at, this->up);
 }
 
+void Camera::rotate(float degrees, glm::vec3 const &axis)
+{
+    glm::mat4 t = glm::translate(glm::mat4(1.0), -at);
+    glm::mat4 ti = glm::translate(glm::mat4(1.0), at);
+    glm::mat4 tirt = ti * glm::rotate(t, degrees, axis);
+    setEye(glm::vec3(tirt * glm::vec4(eye, 1.0)));
+}
+
 glm::vec3 Camera::getAt() const
 {
     return at;

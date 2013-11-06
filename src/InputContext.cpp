@@ -52,3 +52,19 @@ bool InputContext::getMappedRange(RawAxis axis, Range& range) const
     range = iter->second;
     return true;
 }
+
+double InputContext::getSensitivity(Input::Range range) const
+{
+    std::map<Input::Range, double>::const_iterator iter =
+        sensitivities.find(range);
+    if(iter == sensitivities.end())
+    {
+        return 1.0;
+    }
+    return iter->second;
+}
+
+const RangeConverter& InputContext::getConversions() const
+{
+    return *conversions;
+}

@@ -52,7 +52,8 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Renderer)
 # Compile Input
 add_library(Input
             InputContext.cpp
-            InputMapper.cpp)
+            InputMapper.cpp
+            RangeConverter.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Input)
 
 # Add the executable

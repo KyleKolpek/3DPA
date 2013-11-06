@@ -100,7 +100,10 @@ void InputMapper::processAxisInput(RawAxis axis, float value)
         Range range;
         if(context->getMappedRange(axis, range))
         {
-            //currentInput.ranges[range] = context;
+            currentInput.ranges[range] =
+                context->getConversions().convert(
+                    range,
+                    value * context->getSensitivity(range));
             break;
         }
     }

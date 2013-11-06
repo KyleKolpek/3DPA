@@ -15,7 +15,7 @@ private:
         float maxOutput;
         
         template <typename RangeType>
-        RangeType Convert(RangeType invalue) const
+        RangeType convert(RangeType invalue) const
         {
             float v = static_cast<float>(invalue);
             if(v < minInput)
@@ -32,20 +32,20 @@ private:
         }
     };
 
-    typedef std::map<Range, Converter> ConversionMapT;
+    typedef std::map<Input::Range, Converter> ConversionMapT;
 
 public:
     explicit RangeConverter();
 
-    template <typeName RangeType>
-    RangeType Convert(Range rangeID, RangeType invalue) const
+    template <typename RangeType>
+    RangeType convert(Input::Range rangeID, RangeType invalue) const
     {
         ConversionMapT::const_iterator iter = converters.find(rangeID);
         if(iter == converters.end())
         {
             return invalue;
         }
-        return iter->second.Convert<RangeType>(invalue);
+        return iter->second.convert<RangeType>(invalue);
     }
 
 private:

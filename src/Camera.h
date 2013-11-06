@@ -102,6 +102,8 @@ public:
      *************************************************************************/
     void moveTowardsAt(float distance);
 
+    void rotate(float degrees, glm::vec3 const &axis);
+
     // Getters
 
     /**********************************************************************//**

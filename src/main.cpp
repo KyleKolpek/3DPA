@@ -188,6 +188,14 @@ int main(int argc, char *argv[])
                                                   event.key.repeat);
                     }
                     break;
+                case SDL_MOUSEMOTION:
+                    mapper.processAxisInput(Input::RAW_AXIS_MOUSE_X,
+                                            static_cast<double>(
+                                                event.motion.xrel));
+                    mapper.processAxisInput(Input::RAW_AXIS_MOUSE_Y,
+                                            static_cast<double>(
+                                                event.motion.yrel));
+                    break;
                 case SDL_QUIT:
                     quit = true;
                     break;
@@ -219,6 +227,28 @@ void cameraCallback(InputMap& inputs)
 {
     if(inputs.states.find(Input::STATE_CAMERA_MOVE_UP) != inputs.states.end())
     {
+        vp.getCurrentCamera().rotate(5.0, glm::vec3(1.0,0.0,0.0));
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_DOWN) != inputs.states.end())
+    {
+        vp.getCurrentCamera().rotate(-5.0, glm::vec3(1.0,0.0,0.0));
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_LEFT) != inputs.states.end())
+    {
+        vp.getCurrentCamera().rotate(5.0, glm::vec3(0.0,1.0,0.0));
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_RIGHT) != inputs.states.end())
+    {
+        vp.getCurrentCamera().rotate(-5.0, glm::vec3(0.0,1.0,0.0));
+    }
+ /*   double x = inputs.ranges[Input::RANGE_MOVE_CAMERA_X];
+    double y = inputs.ranges[Input::RANGE_MOVE_CAMERA_Y];
+    if(inputs.states.find(Input::STATE_CAMERA_ROTATE) != inputs.states.end())
+    {
+        
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_UP) != inputs.states.end())
+    {
         vp.getCurrentCamera().moveEye(
                 glm::vec3(0.0, 0.05, 0.0));
         vp.getCurrentCamera().moveAt(
@@ -245,4 +275,5 @@ void cameraCallback(InputMap& inputs)
         vp.getCurrentCamera().moveAt(
                 glm::vec3(0.05, 0.0, 0.0));
     }
+    */
 }
