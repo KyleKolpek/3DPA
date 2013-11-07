@@ -9,15 +9,15 @@ class RangeConverter
 private:
     struct Converter
     {
-        float minInput;
-        float maxInput;
-        float minOutput;
-        float maxOutput;
+        double minInput;
+        double maxInput;
+        double minOutput;
+        double maxOutput;
         
         template <typename RangeType>
         RangeType convert(RangeType invalue) const
         {
-            float v = static_cast<float>(invalue);
+            double v = static_cast<double>(invalue);
             if(v < minInput)
             {
                 v = minInput;

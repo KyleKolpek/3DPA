@@ -66,6 +66,7 @@ void InputMapper::processButtonInput(RawButton button,
 {
     Action action;
     State state;
+    bool processed = false;
 
     // Action: If a key is pressed for the first time
     if(pressed && !repeat)
@@ -73,7 +74,7 @@ void InputMapper::processButtonInput(RawButton button,
         if(getActionFromActiveContexts(button, action))
         {
             currentInput.actions.insert(action);
-            return;
+            processed = true;
         }
     }
 
@@ -83,12 +84,15 @@ void InputMapper::processButtonInput(RawButton button,
         if(getStateFromActiveContexts(button, state))
         {
             currentInput.states.insert(state);
-            return;
+            processed = true;
         }
     }
     
     // If a key is up, then we clear the actions and states tied to it
-    clearInputPerButton(button);
+    if(!processed)
+    {
+        clearInputPerButton(button);
+    }
 }
 
 void InputMapper::processAxisInput(RawAxis axis, float value)

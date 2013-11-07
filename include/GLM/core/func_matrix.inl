@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2012 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -26,8 +26,6 @@
 /// @author Christophe Riccio
 ///////////////////////////////////////////////////////////////////////////////////
 
-#include "_vectorize.hpp"
-
 namespace glm
 {
 	// matrixCompMult
@@ -41,7 +39,7 @@ namespace glm
 		GLM_STATIC_ASSERT(detail::type<typename matType::value_type>::is_float, "'matrixCompMult' only accept floating-point inputs");
 
 		matType result(matType::null);
-		for(typename matType::size_type i = 0; i < matType::col_size(); ++i)
+		for(typename matType::size_type i = 0; i < matType::row_size(); ++i)
 			result[i] = x[i] * y[i];
 		return result;
 	}
@@ -578,7 +576,7 @@ namespace glm
 		T Determinant = glm::dot(m[0], Row0);
 
 		Inverse /= Determinant;
-	    
+
 		return Inverse;
 	}
 }//namespace glm

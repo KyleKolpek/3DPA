@@ -1,16 +1,16 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
-#include "Camera.h"
+#include "ThirdPersonCamera.h"
 
 class Viewport
 {
 public:
     Viewport(int width, int height);
     ~Viewport();
-    Camera& getCurrentCamera();
+    ThirdPersonCamera& getCurrentCamera();
 protected:
-    Camera camera;
+    ThirdPersonCamera camera;
     int width;
     int height;
 };

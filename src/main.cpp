@@ -15,7 +15,7 @@
  
 void cameraCallback(InputMap& inputs);
 
-Viewport vp(512, 512);
+Viewport vp(1024, 1024);
 InputMapper mapper;
 
 /* A simple function that prints a message, the error code returned by SDL,
@@ -67,12 +67,15 @@ int main(int argc, char *argv[])
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
  
+    /* Hide the cursor when over the screen */
+    //SDL_SetRelativeMouseMode(SDL_TRUE);
+
     /* Create our window centered at 512x512 resolution */
     mainwindow = SDL_CreateWindow(PROGRAM_NAME,
                                   SDL_WINDOWPOS_CENTERED,
                                   SDL_WINDOWPOS_CENTERED,
-                                  512,
-                                  512,
+                                  1024,
+                                  1024,
                                   SDL_WINDOW_OPENGL |
                                   SDL_WINDOW_SHOWN |
                                   SDL_WINDOW_RESIZABLE);
@@ -110,7 +113,7 @@ int main(int argc, char *argv[])
     SDL_GL_SetSwapInterval(1);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
-    glViewport(0, 0, 512, 512);
+    glViewport(0, 0, 1024, 1024);
 
     // Setup scene
     CubeManager cm;
@@ -171,21 +174,32 @@ int main(int argc, char *argv[])
                 case SDL_KEYUP:
                     {
                         Input::RawButton button =
-                            static_cast<Input::RawButton>(event.key.keysym.sym);
+                            Input::convertToRawButton(event);
 
                         mapper.processButtonInput(button,
                                                   event.key.state,
-                                                  true);
+                                                  false);
                     }
                     break;
                 case SDL_KEYDOWN:
                     {
                         Input::RawButton button =
-                            static_cast<Input::RawButton>(event.key.keysym.sym);
+                            Input::convertToRawButton(event);
 
                         mapper.processButtonInput(button,
                                                   event.key.state,
                                                   event.key.repeat);
+                    }
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                case SDL_MOUSEBUTTONUP:
+                    {
+                        Input::RawButton button = 
+                            Input::convertToRawButton(event);
+
+                        mapper.processButtonInput(button,
+                                                  event.button.state,
+                                                  false);
                     }
                     break;
                 case SDL_MOUSEMOTION:
@@ -225,55 +239,38 @@ int main(int argc, char *argv[])
 
 void cameraCallback(InputMap& inputs)
 {
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_UP) != inputs.states.end())
-    {
-        vp.getCurrentCamera().rotate(5.0, glm::vec3(1.0,0.0,0.0));
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_DOWN) != inputs.states.end())
-    {
-        vp.getCurrentCamera().rotate(-5.0, glm::vec3(1.0,0.0,0.0));
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_LEFT) != inputs.states.end())
-    {
-        vp.getCurrentCamera().rotate(5.0, glm::vec3(0.0,1.0,0.0));
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_RIGHT) != inputs.states.end())
-    {
-        vp.getCurrentCamera().rotate(-5.0, glm::vec3(0.0,1.0,0.0));
-    }
- /*   double x = inputs.ranges[Input::RANGE_MOVE_CAMERA_X];
-    double y = inputs.ranges[Input::RANGE_MOVE_CAMERA_Y];
+    double x = inputs.ranges[Input::RANGE_ROTATE_CAMERA_X];
+    double y = inputs.ranges[Input::RANGE_ROTATE_CAMERA_Y];
+
     if(inputs.states.find(Input::STATE_CAMERA_ROTATE) != inputs.states.end())
     {
-        
+        vp.getCurrentCamera().rotateY(-x);
+        vp.getCurrentCamera().rotateX(y);
     }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_UP) != inputs.states.end())
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_FORWARD) != inputs.states.end())
     {
-        vp.getCurrentCamera().moveEye(
-                glm::vec3(0.0, 0.05, 0.0));
-        vp.getCurrentCamera().moveAt(
-                glm::vec3(0.0, 0.05, 0.0));
+        vp.getCurrentCamera().moveTowardsAt(0.25);
     }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_DOWN) != inputs.states.end())
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_BACK) != inputs.states.end())
     {
-        vp.getCurrentCamera().moveEye(
-                glm::vec3(0.0, -0.05, 0.0));
-        vp.getCurrentCamera().moveAt(
-                glm::vec3(0.0, -0.05, 0.0));
+        vp.getCurrentCamera().moveTowardsAt(-0.25);
     }
     if(inputs.states.find(Input::STATE_CAMERA_MOVE_LEFT) != inputs.states.end())
     {
-        vp.getCurrentCamera().moveEye(
-                glm::vec3(-0.05, 0.0, 0.0));
-        vp.getCurrentCamera().moveAt(
-                glm::vec3(-0.05, 0.0, 0.0));
+        vp.getCurrentCamera().strafeRight(-0.25);
     }
     if(inputs.states.find(Input::STATE_CAMERA_MOVE_RIGHT) != inputs.states.end())
     {
-        vp.getCurrentCamera().moveEye(
-                glm::vec3(0.05, 0.0, 0.0));
-        vp.getCurrentCamera().moveAt(
-                glm::vec3(0.05, 0.0, 0.0));
+        vp.getCurrentCamera().strafeRight(0.25);
     }
-    */
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_UP) != inputs.states.end())
+    {
+        vp.getCurrentCamera().moveEye(glm::vec3(0.0, 0.25, 0.0));
+        vp.getCurrentCamera().moveAt(glm::vec3(0.0, 0.25, 0.0));
+    }
+    if(inputs.states.find(Input::STATE_CAMERA_MOVE_DOWN) != inputs.states.end())
+    {
+        vp.getCurrentCamera().moveEye(glm::vec3(0.0, -0.25, 0.0));
+        vp.getCurrentCamera().moveAt(glm::vec3(0.0, -0.25, 0.0));
+    }
 }

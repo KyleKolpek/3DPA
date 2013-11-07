@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 /// OpenGL Mathematics (glm.g-truc.net)
 ///
-/// Copyright (c) 2005 - 2012 G-Truc Creation (www.g-truc.net)
+/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
@@ -48,7 +48,11 @@ namespace glm
 		detail::tvec3<T> const & v
 	)
 	{
-		T a = radians(angle);
+#ifdef GLM_FORCE_RADIANS
+		T a = angle;
+#else
+		T a = radians(angle);		
+#endif
 		T c = cos(a);
 		T s = sin(a);
 
@@ -120,7 +124,11 @@ namespace glm
 		detail::tvec3<T> const & v
 	)
 	{
-		T a = radians(angle);
+#ifdef GLM_FORCE_RADIANS
+		T const a = angle;
+#else
+		T const a = radians(angle);
+#endif
 		T c = cos(a);
 		T s = sin(a);
 		detail::tmat4x4<T> Result;
@@ -228,21 +236,25 @@ namespace glm
 		valType const & zFar
 	)
 	{
-		valType range = tan(radians(fovy / valType(2))) * zNear;	
-		valType left = -range * aspect;
-		valType right = range * aspect;
-		valType bottom = -range;
-		valType top = range;
+		assert(aspect != valType(0));
+		assert(zFar != zNear);
 
+#ifdef GLM_FORCE_RADIANS
+		valType const rad = fovy;
+#else
+		valType const rad = glm::radians(fovy);
+#endif
+
+		valType tanHalfFovy = tan(rad / valType(2));
 		detail::tmat4x4<valType> Result(valType(0));
-		Result[0][0] = (valType(2) * zNear) / (right - left);
-		Result[1][1] = (valType(2) * zNear) / (top - bottom);
+		Result[0][0] = valType(1) / (aspect * tanHalfFovy);
+		Result[1][1] = valType(1) / (tanHalfFovy);
 		Result[2][2] = - (zFar + zNear) / (zFar - zNear);
 		Result[2][3] = - valType(1);
 		Result[3][2] = - (valType(2) * zFar * zNear) / (zFar - zNear);
 		return Result;
 	}
-
+	
 	template <typename valType>
 	GLM_FUNC_QUALIFIER detail::tmat4x4<valType> perspectiveFov
 	(
@@ -253,16 +265,20 @@ namespace glm
 		valType const & zFar
 	)
 	{
+#ifdef GLM_FORCE_RADIANS
+		valType rad = fov;
+#else
 		valType rad = glm::radians(fov);
+#endif
 		valType h = glm::cos(valType(0.5) * rad) / glm::sin(valType(0.5) * rad);
-		valType w = h * height / width;
+		valType w = h * height / width; ///todo max(width , Height) / min(width , Height)?
 
 		detail::tmat4x4<valType> Result(valType(0));
 		Result[0][0] = w;
 		Result[1][1] = h;
-		Result[2][2] = (zFar + zNear) / (zFar - zNear);
-		Result[2][3] = -valType(1);
-		Result[3][2] = (valType(2) * zFar * zNear) / (zFar - zNear);
+		Result[2][2] = - (zFar + zNear) / (zFar - zNear);
+		Result[2][3] = - valType(1);
+		Result[3][2] = - (valType(2) * zFar * zNear) / (zFar - zNear);
 		return Result;
 	}
 
@@ -274,7 +290,11 @@ namespace glm
 		T zNear
 	)
 	{
-		T range = tan(radians(fovy / T(2))) * zNear;	
+#ifdef GLM_FORCE_RADIANS
+		T const range = tan(fovy / T(2)) * zNear;	
+#else
+		T const range = tan(radians(fovy / T(2))) * zNear;	
+#endif
 		T left = -range * aspect;
 		T right = range * aspect;
 		T bottom = -range;
@@ -297,7 +317,11 @@ namespace glm
 		T zNear
 	)
 	{
+#ifdef GLM_FORCE_RADIANS
+		T range = tan(fovy / T(2)) * zNear;	
+#else
 		T range = tan(radians(fovy / T(2))) * zNear;	
+#endif
 		T left = -range * aspect;
 		T right = range * aspect;
 		T bottom = -range;
@@ -402,11 +426,9 @@ namespace glm
 		Result[0][2] =-f.x;
 		Result[1][2] =-f.y;
 		Result[2][2] =-f.z;
-	/*  Test this instead of translate3D
 		Result[3][0] =-dot(s, eye);
-		Result[3][1] =-dot(y, eye);
+		Result[3][1] =-dot(u, eye);
 		Result[3][2] = dot(f, eye);
-	*/  
-		return translate(Result, -eye);
+		return Result;
 	}
 }//namespace glm

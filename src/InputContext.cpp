@@ -3,18 +3,29 @@
 using namespace Input;
 using namespace std;
 
-InputContext::InputContext()
+InputContext::InputContext():conversions(NULL)
 {
     // Set up mappings here.
     // TODO: change this to take input from a file
-    states[SDLK_UP]    = STATE_CAMERA_MOVE_UP;
-    states[SDLK_DOWN]  = STATE_CAMERA_MOVE_DOWN;
-    states[SDLK_LEFT]  = STATE_CAMERA_MOVE_LEFT;
-    states[SDLK_RIGHT] = STATE_CAMERA_MOVE_RIGHT;
+    states[RAW_BUTTON_W] = STATE_CAMERA_MOVE_FORWARD;
+    states[RAW_BUTTON_S] = STATE_CAMERA_MOVE_BACK;
+    states[RAW_BUTTON_A] = STATE_CAMERA_MOVE_LEFT;
+    states[RAW_BUTTON_D] = STATE_CAMERA_MOVE_RIGHT;
+    states[RAW_BUTTON_SPACE] = STATE_CAMERA_MOVE_UP;
+    states[RAW_BUTTON_C] = STATE_CAMERA_MOVE_DOWN;
+    states[RAW_BUTTON_RIGHT_MOUSE] = STATE_CAMERA_ROTATE;
+
+    ranges[RAW_AXIS_MOUSE_X] = RANGE_ROTATE_CAMERA_X;
+    ranges[RAW_AXIS_MOUSE_Y] = RANGE_ROTATE_CAMERA_Y;
+
+    sensitivities[RANGE_ROTATE_CAMERA_X] = 1.5;
+    sensitivities[RANGE_ROTATE_CAMERA_Y] = 1.5;
+    conversions = new RangeConverter();
 }
 
 InputContext::~InputContext()
 {
+    delete conversions;
 }
 
 bool InputContext::getMappedAction(RawButton button, Action& action) const

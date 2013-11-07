@@ -16,11 +16,14 @@ add_library(Updatable
             Updatable.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Updatable)
 
-# Compile Camera
+# Compile Cameras
 add_library(Camera
             Camera.cpp)
-target_link_libraries(Camera Updatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Camera)
+
+add_library(ThirdPersonCamera
+            ThirdPersonCamera.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} ThirdPersonCamera)
 
 # Compule MortonNumber
 add_library(MortonNumber
@@ -50,11 +53,24 @@ target_link_libraries(Renderer CubeManager Viewport)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Renderer)
 
 # Compile Input
-add_library(Input
-            InputContext.cpp
-            InputMapper.cpp
+add_library(RawInputConstants
+            RawInputConstants.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} RawInputConstants)
+
+add_library(RangeConverter
             RangeConverter.cpp)
-set(INTERNAL_LIBS ${INTERNAL_LIBS} Input)
+target_link_libraries(RangeConverter RawInputConstants)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} RangeConverter)
+
+add_library(InputContext
+            InputContext.cpp)
+target_link_libraries(InputContext RangeConverter RawInputConstants)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} InputContext)
+
+add_library(InputMapper
+            InputMapper.cpp)
+target_link_libraries(InputMapper InputContext RawInputConstants)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} InputMapper)
 
 # Add the executable
 add_executable(../3DPA main.cpp)

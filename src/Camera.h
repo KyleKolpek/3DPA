@@ -9,7 +9,7 @@
  * Controls the view of the 3D assets (Actors, dungeon rooms, and other objects
  *****************************************************************************/
 
-class Camera: public Updatable
+class Camera
 {
 public:
     
@@ -102,8 +102,6 @@ public:
      *************************************************************************/
     void moveTowardsAt(float distance);
 
-    void rotate(float degrees, glm::vec3 const &axis);
-
     // Getters
 
     /**********************************************************************//**
@@ -137,14 +135,7 @@ public:
      *************************************************************************/
     void perspective(float fov, float aspect, float zNear, float zFar);
 
-    /**********************************************************************//**
-     * Update the camera for certain actions
-     * \param[in] sec
-     *     Time since last update
-     *************************************************************************/
-    void update(float sec);
-
-private:
+protected:
     glm::vec3 eye;          /** Where the camera looks from            */
     glm::vec3 at;           /** Where the camera is looking at         */
     glm::vec3 up;           /** A vector pointing up                   */
