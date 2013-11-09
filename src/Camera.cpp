@@ -71,12 +71,6 @@ void Camera::moveUp(glm::vec3 const &up)
     viewMatrix = glm::lookAt(this->eye, this->at, this->up);
 }
 
-void Camera::moveTowardsAt(float distance)
-{
-    this->eye += glm::normalize(at - eye) * distance;
-    viewMatrix = glm::lookAt(this->eye, this->at, this->up);
-}
-
 glm::vec3 Camera::getAt() const
 {
     return at;

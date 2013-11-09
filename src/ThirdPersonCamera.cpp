@@ -10,12 +10,14 @@ ThirdPersonCamera::ThirdPersonCamera():
 
 void ThirdPersonCamera::rotateX(float degrees)
 {
-    setAt(glm::rotateX(at - eye, degrees) + eye);
+    // TODO: Add a 'right' member to avoid excess cross products
+    setAt(glm::rotate(at - eye, degrees,
+        glm::cross(glm::normalize(at - eye), up)) + eye);
 }
 
 void ThirdPersonCamera::rotateY(float degrees)
 {
-    setAt(glm::rotateY(at - eye, degrees) + eye);
+    setAt(glm::rotate(at - eye, degrees, up) + eye);
 }
 
 void ThirdPersonCamera::rotateZ(float degrees)
