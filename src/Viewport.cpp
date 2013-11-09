@@ -16,7 +16,7 @@ Viewport::~Viewport()
 {
 }
 
-ThirdPersonCamera& Viewport::getCurrentCamera()
+FirstPersonCamera& Viewport::getCurrentCamera()
 {
     return camera;
 }

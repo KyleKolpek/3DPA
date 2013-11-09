@@ -1,13 +1,13 @@
-#ifndef THIRDPERSONCAMERA_H
-#define THIRDPERSONCAMERA_H
+#ifndef FIRSTPERSONCAMERA_H
+#define FIRSTPERSONCAMERA_H
 
 #include "Camera.h"
 #include "GLM/gtc/quaternion.hpp"
 
-class ThirdPersonCamera: public Camera
+class FirstPersonCamera: public Camera
 {
 public:
-    ThirdPersonCamera();
+    FirstPersonCamera();
 
     void rotateX(float degrees);
     void rotateY(float degrees);
