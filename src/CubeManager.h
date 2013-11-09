@@ -16,7 +16,7 @@ public:
     Cube& at(int x, int y, int z);
     void clear();
     void erase(int x, int y, int z);
-    bool insert(Cube& cube);
+    bool insert(const Cube &cube);
     void populateModelData();
     void draw(GLuint program);
     GLuint loadShader();

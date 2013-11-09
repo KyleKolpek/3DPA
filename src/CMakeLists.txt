@@ -30,6 +30,12 @@ add_library(MortonNumber
             MortonNumber.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} MortonNumber)
 
+# Compile CubeGenerator
+add_library(CubeGenerator
+            CubeGenerator.cpp)
+target_link_libraries(CubeGenerator CubeManager InputMapper)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeGenerator) 
+
 # Compile CubeManager
 add_library(CubeManager
             CubeManager.cpp)

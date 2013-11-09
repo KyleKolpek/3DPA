@@ -6,7 +6,8 @@ namespace Input
 
 enum Action
 {
-    TEST_ACTION
+    TEST_ACTION,
+    ACTION_ADD_CUBE
 };
 
 enum State

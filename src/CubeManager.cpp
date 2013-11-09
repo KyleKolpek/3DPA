@@ -142,7 +142,7 @@ void CubeManager::draw(GLuint program)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-bool CubeManager::insert(Cube& cube)
+bool CubeManager::insert(const Cube& cube)
 {
     needsUpdated = true;
     return cubeMap.insert(
