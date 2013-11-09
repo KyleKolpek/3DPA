@@ -21,9 +21,9 @@ add_library(Camera
             Camera.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Camera)
 
-add_library(ThirdPersonCamera
-            ThirdPersonCamera.cpp)
-set(INTERNAL_LIBS ${INTERNAL_LIBS} ThirdPersonCamera)
+add_library(FirstPersonCamera
+            FirstPersonCamera.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} FirstPersonCamera)
 
 # Compule MortonNumber
 add_library(MortonNumber
