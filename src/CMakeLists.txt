@@ -31,15 +31,20 @@ add_library(MortonNumber
 set(INTERNAL_LIBS ${INTERNAL_LIBS} MortonNumber)
 
 # Compile CubeGenerator
+add_library(Cube
+            Cube.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
+
+# Compile CubeGenerator
 add_library(CubeGenerator
             CubeGenerator.cpp)
-target_link_libraries(CubeGenerator CubeManager InputMapper)
+target_link_libraries(CubeGenerator Cube CubeManager InputMapper Drawable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeGenerator) 
 
 # Compile CubeManager
 add_library(CubeManager
             CubeManager.cpp)
-target_link_libraries(CubeManager Drawable MortonNumber)
+target_link_libraries(CubeManager Cube Drawable MortonNumber)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeManager) 
 
 # Compile SOIL

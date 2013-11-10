@@ -13,6 +13,9 @@ public:
     float green;
     float blue;
     int size;
+
+    static float vertexData[];
+    static int vertexCount;
 };                                                    
                                                       
 #endif                                                

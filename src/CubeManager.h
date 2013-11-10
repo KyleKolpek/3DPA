@@ -29,8 +29,6 @@ private:
     };
     MortonNumber makeKey(int x, int y, int z);
     std::map<MortonNumber, Cube> cubeMap;
-    static float vertexData[];
-    static int vertexCount;
     GLuint vertexBuffer;
     GLuint instanceBuffer;
     bool needsUpdated;

@@ -5,66 +5,14 @@
 
 using namespace std;
 
-float CubeManager::vertexData[] = { 0.0,  1.0,  0.0, // BACK  // TOP LEFT VERT
-                                    0.0,  0.0,  0.0,          // BOT LEFT VERT
-                                    1.0,  1.0,  0.0,          // TOP RIGHT VERT
-                                    1.0,  0.0,  0.0,          // BOT RIGHT VERT
-                                    1.0,  1.0,  0.0, // RIGHT
-                                    1.0,  0.0,  0.0,
-                                    1.0,  1.0, -1.0,
-                                    1.0,  0.0, -1.0,
-                                    1.0,  1.0, -1.0, // FRONT
-                                    1.0,  0.0, -1.0,
-                                    0.0,  1.0, -1.0,
-                                    0.0,  0.0, -1.0,
-                                    0.0,  1.0, -1.0, // LEFT
-                                    0.0,  0.0, -1.0,
-                                    0.0,  1.0,  0.0,
-                                    0.0,  0.0,  0.0,
-                                    0.0,  1.0,  0.0, // TOP
-                                    1.0,  1.0,  0.0,
-                                    0.0,  1.0, -1.0,
-                                    1.0,  1.0, -1.0,
-                                    0.0,  0.0,  0.0, // BOTTOM
-                                    0.0,  0.0, -1.0,
-                                    1.0,  0.0,  0.0,
-                                    1.0,  0.0, -1.0,
-                                                     // NORMALS
-                                    0.0,  0.0,  1.0, // BACK
-                                    0.0,  0.0,  1.0,
-                                    0.0,  0.0,  1.0,
-                                    0.0,  0.0,  1.0,
-                                    1.0,  0.0,  0.0, // RIGHT
-                                    1.0,  0.0,  0.0,
-                                    1.0,  0.0,  0.0,
-                                    1.0,  0.0,  0.0,
-                                    0.0,  0.0, -1.0, // FRONT
-                                    0.0,  0.0, -1.0,
-                                    0.0,  0.0, -1.0,
-                                    0.0,  0.0, -1.0,
-                                   -1.0,  0.0,  0.0, // LEFT
-                                   -1.0,  0.0,  0.0,
-                                   -1.0,  0.0,  0.0,
-                                   -1.0,  0.0,  0.0,
-                                    0.0,  1.0,  0.0, // TOP
-                                    0.0,  1.0,  0.0,
-                                    0.0,  1.0,  0.0,
-                                    0.0,  1.0,  0.0,
-                                    0.0, -1.0,  0.0, // BOTTOM
-                                    0.0, -1.0,  0.0,
-                                    0.0, -1.0,  0.0,
-                                    0.0, -1.0,  0.0};
-
-int CubeManager::vertexCount = 4 * 6;
-
 CubeManager::CubeManager():needsUpdated(false)
 {
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Cube::vertexCount * 3 * 2,
+        Cube::vertexData, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    setShaderManager(new ShaderManager("../assets/shaders/"));
+    //setShaderManager(new ShaderManager("../assets/shaders/"));
 }
 
 CubeManager::~CubeManager()
@@ -121,7 +69,7 @@ void CubeManager::draw(GLuint program)
     glVertexAttribPointer(vertexPosLoc, 3, GL_FLOAT, GL_FALSE,
         3 * sizeof(float), 0);
     glVertexAttribPointer(vertexNormalLoc, 3, GL_FLOAT, GL_TRUE,
-        3 * sizeof(float), (void *)(vertexCount * 3 * sizeof(float)));
+        3 * sizeof(float), (void *)(Cube::vertexCount * 3 * sizeof(float)));
 
     // Instance data
     glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
@@ -134,7 +82,8 @@ void CubeManager::draw(GLuint program)
     glVertexAttribDivisor(vertexColorLoc, 1);
 
     // TODO: Change GL_TRIANGLES to account for modelData->vertexType
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, vertexCount, cubeMap.size());
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, Cube::vertexCount,
+        cubeMap.size());
     glDisableVertexAttribArray(vertexPosLoc);
     glDisableVertexAttribArray(vertexNormalLoc);
     glDisableVertexAttribArray(cubePosLoc);
