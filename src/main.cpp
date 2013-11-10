@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
  
-    /* Hide the cursor when over the screen */
+    /* Hide the cursor when over the screen. This seems to be bugged. */
     //SDL_SetRelativeMouseMode(SDL_TRUE);
 
     /* Create our window centered at 512x512 resolution */
