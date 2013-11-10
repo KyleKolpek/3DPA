@@ -109,8 +109,13 @@ int main(int argc, char *argv[])
     }
 
     // Disable Culling
-    //glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
+
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
