@@ -2,6 +2,7 @@
 #define UPDATABLE_H
 
 #include "stdgl.h"
+#include "InputMapper.h"
 
 /***************************************************************************//**
  * Allows an object to be updated.
@@ -19,10 +20,9 @@ public:
      * Handles input and updates the object.
      * \param[in] sec
      *     The number of seconds since the last update.
-     * \param[in] input
-     *     An input object holding any given user input.
      **************************************************************************/
-    virtual void update(float sec) = 0;
+    //virtual void update(float sec) = 0;
+    virtual void handleInput(InputMap &input) = 0;
 };
 
 #endif

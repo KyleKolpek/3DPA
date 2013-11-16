@@ -3,10 +3,11 @@
 
 #include "CubeManager.h"
 #include "Drawable.h"
+#include "Updatable.h"
 #include "InputMapper.h"
 #include "GLM/glm.hpp"
 
-class CubeGenerator: public Drawable
+class CubeGenerator: public Drawable, public Updatable
 {
 public:
 
@@ -23,6 +24,7 @@ public:
     GLuint loadShader();
 
     CubeManager *cubeManager;
+    void handleInput(InputMap &input);
 private:
     struct CubePosColorAlpha
     {

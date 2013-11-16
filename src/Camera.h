@@ -2,7 +2,6 @@
 #define CAMERA_H
 
 #include "GLM/glm.hpp"
-#include "Updatable.h"
 
 /*************************************************************************//**
  * The camera for the game

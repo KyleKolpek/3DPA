@@ -136,3 +136,11 @@ glm::vec3 CubeGenerator::getPosition()
 {
     return position;
 }
+
+void CubeGenerator::handleInput(InputMap &input)
+{
+    if(input.actions.find(Input::ACTION_ADD_CUBE) != input.actions.end())
+    {
+        addCube();
+    }
+}

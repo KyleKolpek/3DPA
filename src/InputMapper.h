@@ -9,6 +9,7 @@
 #include "RawInputConstants.h"
 
 class InputContext;
+class Updatable;
 
 class InputMap
 {
@@ -30,9 +31,9 @@ public:
     
     // NOTE: This may be better represented as an interface than a function
     // pointer
-    typedef void (*InputCallback)(InputMap&);
+    //typedef void (*InputCallback)(InputMap&);
 
-    void addCallback(InputCallback callback, int priority);
+    void addCallback(Updatable *callback, int priority);
     void pushContext(const std::string& contextName);
     void popContext();
 
@@ -54,7 +55,7 @@ protected:
 private:
     std::map<std::string, InputContext*> inputContexts;
     std::list<InputContext*> activeContexts;
-    std::multimap<int, InputCallback> callbacks;
+    std::multimap<int, Updatable*> callbacks;
     InputMap currentInput;
 };
 

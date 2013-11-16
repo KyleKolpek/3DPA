@@ -14,6 +14,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Drawable)
 # Compile Updatable
 add_library(Updatable
             Updatable.cpp)
+target_link_libraries(Updatable InputMapper)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Updatable)
 
 # Compile Cameras
@@ -23,6 +24,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Camera)
 
 add_library(FirstPersonCamera
             FirstPersonCamera.cpp)
+target_link_libraries(FirstPersonCamera Updatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} FirstPersonCamera)
 
 # Compule MortonNumber
@@ -30,7 +32,7 @@ add_library(MortonNumber
             MortonNumber.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} MortonNumber)
 
-# Compile CubeGenerator
+# Compile Cube
 add_library(Cube
             Cube.cpp)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
@@ -38,7 +40,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
 # Compile CubeGenerator
 add_library(CubeGenerator
             CubeGenerator.cpp)
-target_link_libraries(CubeGenerator Cube CubeManager InputMapper Drawable)
+target_link_libraries(CubeGenerator Cube CubeManager InputMapper Drawable Updatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeGenerator) 
 
 # Compile CubeManager
@@ -54,7 +56,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL)
 # Compile Viewport
 add_library(Viewport
             Viewport.cpp)
-target_link_libraries(Viewport Camera)
+target_link_libraries(Viewport FirstPersonCamera)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Viewport)
 
 # Compile Renderer

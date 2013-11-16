@@ -8,6 +8,10 @@ FirstPersonCamera::FirstPersonCamera():
 {
 }
 
+FirstPersonCamera::~FirstPersonCamera()
+{
+}
+
 void FirstPersonCamera::rotateX(float degrees)
 {
     // TODO: Add a 'right' member to avoid excess cross products
@@ -39,4 +43,42 @@ void FirstPersonCamera::strafeRight(float distance)
     eye = eye + delta;
     at  = at + delta;
     viewMatrix = glm::lookAt(eye, at, up);
+}
+
+void FirstPersonCamera::handleInput(InputMap &input)
+{
+    double x = input.ranges[Input::RANGE_ROTATE_CAMERA_X];
+    double y = input.ranges[Input::RANGE_ROTATE_CAMERA_Y];
+
+    if(input.states.find(Input::STATE_CAMERA_ROTATE) != input.states.end())
+    {
+        rotateY(-x);
+        rotateX(y);
+    }
+    if(input.states.find(Input::STATE_CAMERA_MOVE_FORWARD) != input.states.end())
+    {
+        moveTowardsAt(0.25);
+    }
+    if(input.states.find(Input::STATE_CAMERA_MOVE_BACK) != input.states.end())
+    {
+        moveTowardsAt(-0.25);
+    }
+    if(input.states.find(Input::STATE_CAMERA_MOVE_LEFT) != input.states.end())
+    {
+        strafeRight(-0.25);
+    }
+    if(input.states.find(Input::STATE_CAMERA_MOVE_RIGHT) != input.states.end())
+    {
+        strafeRight(0.25);
+    }
+    if(input.states.find(Input::STATE_CAMERA_MOVE_UP) != input.states.end())
+    {
+        moveEye(glm::vec3(0.0, 0.25, 0.0));
+        moveAt(glm::vec3(0.0, 0.25, 0.0));
+    }
+    if(input.states.find(Input::STATE_CAMERA_MOVE_DOWN) != input.states.end())
+    {
+        moveEye(glm::vec3(0.0, -0.25, 0.0));
+        moveAt(glm::vec3(0.0, -0.25, 0.0));
+    }
 }

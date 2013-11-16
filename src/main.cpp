@@ -18,7 +18,6 @@ void cameraCallback(InputMap& inputs);
 
 Viewport vp(1024, 1024);
 InputMapper mapper;
-CubeGenerator *cg;
 ShaderManager sm("../assets/shaders/");
 
 /* A simple function that prints a message, the error code returned by SDL,
@@ -150,17 +149,18 @@ int main(int argc, char *argv[])
     cm.insert(b);
     cm.insert(c);
 
-    cg = new CubeGenerator();
-    cg->cubeManager = &cm;
-    cg->setShaderManager(&sm);
+    CubeGenerator cg;
+    cg.cubeManager = &cm;
+    cg.setShaderManager(&sm);
 
     mapper.pushContext("maincontext");
-    mapper.addCallback(cameraCallback, 0);
+    mapper.addCallback(&vp.getCurrentCamera(), 0);
+    mapper.addCallback(&cg, 0);
 
     Renderer r;
     r.addViewport(&vp);
     r.addModel(&cm);
-    r.addModel(cg);
+    r.addModel(&cg);
 
     /* GAME LOOP */
     while(!quit)
@@ -234,6 +234,7 @@ int main(int argc, char *argv[])
         mapper.dispatch();
         mapper.reset();
 
+        cg.moveTo(vp.getCurrentCamera().getAt());
         r.render();
         while(GLenum e = glGetError())
         {
@@ -244,7 +245,6 @@ int main(int argc, char *argv[])
     }
  
     /* Delete random stuff */
-    delete cg;
 
     /* Delete our opengl context, destroy our window, and shutdown SDL */
     SDL_GL_DeleteContext(maincontext);
@@ -252,53 +252,4 @@ int main(int argc, char *argv[])
     SDL_Quit();
 
     return 0;
-}
-
-void cameraCallback(InputMap& inputs)
-{
-    double x = inputs.ranges[Input::RANGE_ROTATE_CAMERA_X];
-    double y = inputs.ranges[Input::RANGE_ROTATE_CAMERA_Y];
-
-    if(inputs.states.find(Input::STATE_CAMERA_ROTATE) != inputs.states.end())
-    {
-        vp.getCurrentCamera().rotateY(-x);
-        vp.getCurrentCamera().rotateX(y);
-        cg->moveTo(vp.getCurrentCamera().getAt());
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_FORWARD) != inputs.states.end())
-    {
-        vp.getCurrentCamera().moveTowardsAt(0.25);
-        cg->moveTo(vp.getCurrentCamera().getAt());
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_BACK) != inputs.states.end())
-    {
-        vp.getCurrentCamera().moveTowardsAt(-0.25);
-        cg->moveTo(vp.getCurrentCamera().getAt());
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_LEFT) != inputs.states.end())
-    {
-        vp.getCurrentCamera().strafeRight(-0.25);
-        cg->moveTo(vp.getCurrentCamera().getAt());
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_RIGHT) != inputs.states.end())
-    {
-        vp.getCurrentCamera().strafeRight(0.25);
-        cg->moveTo(vp.getCurrentCamera().getAt());
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_UP) != inputs.states.end())
-    {
-        vp.getCurrentCamera().moveEye(glm::vec3(0.0, 0.25, 0.0));
-        vp.getCurrentCamera().moveAt(glm::vec3(0.0, 0.25, 0.0));
-        cg->moveTo(vp.getCurrentCamera().getAt());
-    }
-    if(inputs.states.find(Input::STATE_CAMERA_MOVE_DOWN) != inputs.states.end())
-    {
-        vp.getCurrentCamera().moveEye(glm::vec3(0.0, -0.25, 0.0));
-        vp.getCurrentCamera().moveAt(glm::vec3(0.0, -0.25, 0.0));
-        cg->moveTo(vp.getCurrentCamera().getAt());
-    }
-    if(inputs.actions.find(Input::ACTION_ADD_CUBE) != inputs.actions.end())
-    {
-        cg->addCube();
-    }
 }

@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include "InputMapper.h"
 #include "InputContext.h"
+#include "Updatable.h"
 
 using namespace std;
 using namespace Input;
@@ -54,9 +55,9 @@ void InputMapper::popContext()
     activeContexts.pop_front();
 }
 
-void InputMapper::addCallback(InputCallback callback, int priority)
+void InputMapper::addCallback(Updatable *callback, int priority)
 {
-    callbacks.insert(pair<int, InputCallback>(priority, callback));
+    callbacks.insert(pair<int, Updatable*>(priority, callback));
 }
 
 // NOTE: we could change this function to allow events to occur on KEYUP
@@ -150,10 +151,10 @@ void InputMapper::dispatch() const
     // It allows dispatch to be const, but the callbacks still can't be handled
     // in parallel.
     InputMap input = currentInput;
-    for(map<int, InputCallback>::const_iterator i = callbacks.begin();
+    for(map<int, Updatable*>::const_iterator i = callbacks.begin();
         i != callbacks.end(); i++)
     {
-        (*i->second)(input);
+        (*i->second).handleInput(input);
     }
 }
 
