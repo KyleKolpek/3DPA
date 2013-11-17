@@ -28,6 +28,9 @@ include_directories(${PROJECT_BINARY_DIR})
 # Include the include direcetory
 include_directories("${PROJECT_SOURCE_DIR}/include/")
 
+# Add a library directory
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${PROJECT_SOURCE_DIR}/lib)
+
 # Add custom module path
 set(
     CMAKE_MODULE_PATH

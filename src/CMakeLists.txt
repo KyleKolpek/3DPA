@@ -53,6 +53,9 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeManager)
 add_subdirectory(SOIL)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL)
 
+add_subdirectory(Rocket)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore)
+
 # Compile Viewport
 add_library(Viewport
             Viewport.cpp)
