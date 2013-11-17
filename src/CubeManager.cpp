@@ -5,7 +5,9 @@
 
 using namespace std;
 
-CubeManager::CubeManager():needsUpdated(false)
+CubeManager::CubeManager():
+    needsUpdated(false),
+    instanceBuffer(0)
 {
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -17,6 +19,7 @@ CubeManager::CubeManager():needsUpdated(false)
 
 CubeManager::~CubeManager()
 {
+    glDeleteBuffers(1, &vertexBuffer);
 }
 
 GLuint CubeManager::loadShader()
@@ -117,6 +120,9 @@ Cube& CubeManager::at(int x, int y, int z)
 
 void CubeManager::populateModelData()
 {
+    // Delete the stale buffer
+    glDeleteBuffers(1, &instanceBuffer);
+
     CubePosColor *instanceData = new CubePosColor[cubeMap.size()];
 
     // for each cube add position and color info

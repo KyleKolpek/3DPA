@@ -12,6 +12,7 @@ class CubeGenerator: public Drawable, public Updatable
 public:
 
     CubeGenerator();
+    ~CubeGenerator();
 
     void move(glm::vec3 delta);
     void moveTo(glm::vec3 position);

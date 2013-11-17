@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <iostream>
 #include "InputMapper.h"
 #include "InputContext.h"
 #include "Updatable.h"
@@ -81,7 +82,7 @@ void InputMapper::processButtonInput(RawButton button,
 
     // State: If a key is down
     if(pressed)
-    {
+    {   
         if(getStateFromActiveContexts(button, state))
         {
             currentInput.states.insert(state);
@@ -142,6 +143,8 @@ bool InputMapper::getStateFromActiveContexts(RawButton button,
             return true;
         }
     }
+
+    return false;
 }
 
 // Calls all of the registered callbacks with a copy of currentInput.

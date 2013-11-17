@@ -6,7 +6,6 @@ namespace Input
 
 enum Action
 {
-    TEST_ACTION,
     ACTION_ADD_CUBE
 };
 

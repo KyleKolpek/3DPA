@@ -1,4 +1,6 @@
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 #include "CubeGenerator.h"
 
 using namespace std;
@@ -13,6 +15,12 @@ CubeGenerator::CubeGenerator():
         Cube::vertexData, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     //setShaderManager(new ShaderManager("../assets/shaders/"));
+    srand(time(NULL));
+}
+
+CubeGenerator::~CubeGenerator()
+{
+    glDeleteBuffers(1, &vertexBuffer);
 }
 
 GLuint CubeGenerator::loadShader()
@@ -27,10 +35,10 @@ void CubeGenerator::draw(GLuint program)
     instanceData.position[0] = glm::floor(position.x);
     instanceData.position[1] = glm::floor(position.y);
     instanceData.position[2] = glm::ceil(position.z);
-
-    instanceData.color[0] = 1.0;
-    instanceData.color[1] = 1.0;
-    instanceData.color[2] = 1.0;
+    
+    instanceData.color[0] = 1;
+    instanceData.color[1] = 1;
+    instanceData.color[2] = 1;
 
     instanceData.alpha = .25;
 
@@ -98,6 +106,7 @@ void CubeGenerator::draw(GLuint program)
     glDisableVertexAttribArray(cubePosLoc);
     glDisableVertexAttribArray(vertexColorLoc);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &instanceBuffer);
 }
 
 void CubeGenerator::move(glm::vec3 delta)
@@ -117,9 +126,9 @@ void CubeGenerator::addCube()
     c.y = glm::floor(position.y);
     c.z = glm::ceil(position.z);
 
-    c.red   = 0.85;
-    c.green = 0.35;
-    c.blue  = 0.0;
+    c.red   = float(rand())/float(RAND_MAX);
+    c.green = float(rand())/float(RAND_MAX);
+    c.blue  = float(rand())/float(RAND_MAX);
 
     if(!cubeManager->insert(c))
     {
