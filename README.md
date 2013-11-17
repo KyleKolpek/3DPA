@@ -20,16 +20,16 @@ The models will be able to be exported as either a proprietary "raw" voxel
 format (.3dpa) or as traditional collada models (.dae). Collada is a verbose and
 common standard, making it an obvious choice for storing mesh models. The raw
 format allows for a smaller file footprint, and lends itself to a being used in
-a geometry shader. *Due to optimizations of meshes collada files cannot be
-imported, so make sure to save raw formats as well*
+a geometry shader. **Due to optimizations of meshes collada files cannot be
+imported, so make sure to save raw formats as well.**
 
 ## Milestones 
 
 * ~~Create an OpenGL context capable of displaying cubes.~~
-* Enable the user to navigate 3D space.
-* Enable the user to add and delete cubes.
+* ~~Enable the user to navigate 3D space.~~
+* ~~Enable the user to add and delete cubes.~~
 * Enable the user to choose colors for cubes.
-* Decide on an OpenGL text/menu library.
+* ~~Decide on an OpenGL text/menu library.~~ [librocket](http://www.librocket.com/)
 * Add a menu system.
 * Define a standard for the raw data files.
 * Write an exporter for the raw data files.
