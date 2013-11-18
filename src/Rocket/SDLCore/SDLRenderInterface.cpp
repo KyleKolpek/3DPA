@@ -25,68 +25,117 @@
  *
  */
 
-#include <ShellRenderInterfaceOpenGL.h>
+#include "SDLRenderInterface.h"
 #include <Rocket/Core.h>
+#include "SOIL/SOIL.h"
+#include "../../ShaderManager.h"
+#include <iostream>
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
-ShellRenderInterfaceOpenGL::ShellRenderInterfaceOpenGL()
+SDLRenderInterface::SDLRenderInterface()
 {
 }
 
-void ShellRenderInterfaceOpenGL::SetViewport(int width, int height)
+void SDLRenderInterface::SetViewport(int width, int height)
 {
     m_width = width;
     m_height = height;
 }
 
+void SDLRenderInterface::SetShaderManager(ShaderManager *sm)
+{
+    shaderManager = sm;
+}
+
 
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.
-void ShellRenderInterfaceOpenGL::RenderGeometry(Rocket::Core::Vertex* vertices, int ROCKET_UNUSED(num_vertices), int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
+void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
-	glPushMatrix();
-	glTranslatef(translation.x, translation.y, 0);
+    
+    // TODO: Check glGetAttribLocation calls for success
 
-	glVertexPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex), &vertices[0].position);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Rocket::Core::Vertex), &vertices[0].colour);
+    GLuint program;
+    GLuint vertexBuffer;
+    GLuint vertexPosLoc   = 0;
+    GLuint vertexColorLoc = 0;
+    GLuint texCoordLoc    = 0;
+    GLuint texSamplerLoc  = 0;
+    GLuint translationLoc = 0;
 
+    // Populate vertex buffer
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Rocket::Core::Vertex) * num_vertices,
+                 vertices, GL_STATIC_DRAW);
+
+    // Handle textures
 	if (!texture)
 	{
-		glDisable(GL_TEXTURE_2D);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        program = shaderManager->getProgram(2, "rocketNoTex.vert",
+                                               "rocketNoTex.frag");
 	}
 	else
 	{
-		glEnable(GL_TEXTURE_2D);
+        program = shaderManager->getProgram(2, "rocketTex.vert",
+                                               "rocketTex.frag");
+        texCoordLoc = glGetAttribLocation(program, "vertexTexCoord");
+
+        glEnableVertexAttribArray(texCoordLoc);
+        glVertexAttribPointer(texCoordLoc, 2, GL_FLOAT, GL_FALSE,
+                              sizeof(Rocket::Core::Vertex),
+                              (void*) (sizeof(Rocket::Core::Vector2f) +
+                              sizeof(Rocket::Core::Colourb)));
+
+        glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, (GLuint) texture);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex), &vertices[0].tex_coord);
+        texSamplerLoc = glGetUniformLocation(program, "texture");
+        glUniform1i(texSamplerLoc, 0);
 	}
+    
+    translationLoc = glGetUniformLocation(program, "translation");
+    glUniform2f(translationLoc, translation.x, translation.y);
+
+    // Draw the geometry
+    vertexPosLoc = glGetAttribLocation(program, "vertexPosition");
+    vertexColorLoc = glGetAttribLocation(program, "vertexColor");
+    
+    glEnableVertexAttribArray(vertexPosLoc);
+    glEnableVertexAttribArray(vertexColorLoc);
+
+    glVertexAttribPointer(vertexPosLoc, 2, GL_FLOAT, GL_FALSE,
+                              sizeof(Rocket::Core::Vertex), 0);
+    glVertexAttribPointer(vertexColorLoc, 4, GL_UNSIGNED_BYTE, GL_FALSE,
+                              sizeof(Rocket::Core::Vertex),
+                              (void*) sizeof(Rocket::Core::Vector2f));
 
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
 
-	glPopMatrix();
+    glDisableVertexAttribArray(vertexPosLoc);
+    glDisableVertexAttribArray(vertexColorLoc);
+    glDisableVertexAttribArray(texCoordLoc);
+    glDeleteBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 // Called by Rocket when it wants to compile geometry it believes will be static for the forseeable future.		
-Rocket::Core::CompiledGeometryHandle ShellRenderInterfaceOpenGL::CompileGeometry(Rocket::Core::Vertex* ROCKET_UNUSED(vertices), int ROCKET_UNUSED(num_vertices), int* ROCKET_UNUSED(indices), int ROCKET_UNUSED(num_indices), const Rocket::Core::TextureHandle ROCKET_UNUSED(texture))
+Rocket::Core::CompiledGeometryHandle SDLRenderInterface::CompileGeometry(Rocket::Core::Vertex* ROCKET_UNUSED(vertices), int ROCKET_UNUSED(num_vertices), int* ROCKET_UNUSED(indices), int ROCKET_UNUSED(num_indices), const Rocket::Core::TextureHandle ROCKET_UNUSED(texture))
 {
 	return (Rocket::Core::CompiledGeometryHandle) NULL;
 }
 
 // Called by Rocket when it wants to render application-compiled geometry.		
-void ShellRenderInterfaceOpenGL::RenderCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry), const Rocket::Core::Vector2f& ROCKET_UNUSED(translation))
+void SDLRenderInterface::RenderCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry), const Rocket::Core::Vector2f& ROCKET_UNUSED(translation))
 {
 }
 
 // Called by Rocket when it wants to release application-compiled geometry.		
-void ShellRenderInterfaceOpenGL::ReleaseCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry))
+void SDLRenderInterface::ReleaseCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry))
 {
 }
 
 // Called by Rocket when it wants to enable or disable scissoring to clip content.		
-void ShellRenderInterfaceOpenGL::EnableScissorRegion(bool enable)
+void SDLRenderInterface::EnableScissorRegion(bool enable)
 {
 	if (enable)
 		glEnable(GL_SCISSOR_TEST);
@@ -95,104 +144,28 @@ void ShellRenderInterfaceOpenGL::EnableScissorRegion(bool enable)
 }
 
 // Called by Rocket when it wants to change the scissor region.		
-void ShellRenderInterfaceOpenGL::SetScissorRegion(int x, int y, int width, int height)
+void SDLRenderInterface::SetScissorRegion(int x, int y, int width, int height)
 {
 	glScissor(x, m_height - (y + height), width, height);
 }
 
-// Set to byte packing, or the compiler will expand our struct, which means it won't read correctly from file
-#pragma pack(1) 
-struct TGAHeader 
-{
-	char  idLength;
-	char  colourMapType;
-	char  dataType;
-	short int colourMapOrigin;
-	short int colourMapLength;
-	char  colourMapDepth;
-	short int xOrigin;
-	short int yOrigin;
-	short int width;
-	short int height;
-	char  bitsPerPixel;
-	char  imageDescriptor;
-};
-// Restore packing
-#pragma pack()
-
 // Called by Rocket when a texture is required by the library.		
-bool ShellRenderInterfaceOpenGL::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
+bool SDLRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
 {
-	Rocket::Core::FileInterface* file_interface = Rocket::Core::GetFileInterface();
-	Rocket::Core::FileHandle file_handle = file_interface->Open(source);
-	if (!file_handle)
-	{
-		return false;
-	}
-	
-	file_interface->Seek(file_handle, 0, SEEK_END);
-	size_t buffer_size = file_interface->Tell(file_handle);
-	file_interface->Seek(file_handle, 0, SEEK_SET);
-	
-	char* buffer = new char[buffer_size];
-	file_interface->Read(buffer, buffer_size, file_handle);
-	file_interface->Close(file_handle);
+    std::cout << "Texture source: " << source.CString() << std::endl;
+    
+    texture_handle = (Rocket::Core::TextureHandle) SOIL_load_OGL_texture(
+        source.CString(),
+        SOIL_LOAD_AUTO,
+        SOIL_CREATE_NEW_ID,
+        SOIL_FLAG_MIPMAPS       | SOIL_FLAG_INVERT_Y | 
+        SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 
-	TGAHeader header;
-	memcpy(&header, buffer, sizeof(TGAHeader));
-	
-	int color_mode = header.bitsPerPixel / 8;
-	int image_size = header.width * header.height * 4; // We always make 32bit textures 
-	
-	if (header.dataType != 2)
-	{
-		Rocket::Core::Log::Message(Rocket::Core::Log::LT_ERROR, "Only 24/32bit uncompressed TGAs are supported.");
-		return false;
-	}
-	
-	// Ensure we have at least 3 colors
-	if (color_mode < 3)
-	{
-		Rocket::Core::Log::Message(Rocket::Core::Log::LT_ERROR, "Only 24 and 32bit textures are supported");
-		return false;
-	}
-	
-	const char* image_src = buffer + sizeof(TGAHeader);
-	unsigned char* image_dest = new unsigned char[image_size];
-	
-	// Targa is BGR, swap to RGB and flip Y axis
-	for (long y = 0; y < header.height; y++)
-	{
-		long read_index = y * header.width * color_mode;
-		long write_index = ((header.imageDescriptor & 32) != 0) ? read_index : (header.height - y - 1) * header.width * color_mode;
-		for (long x = 0; x < header.width; x++)
-		{
-			image_dest[write_index] = image_src[read_index+2];
-			image_dest[write_index+1] = image_src[read_index+1];
-			image_dest[write_index+2] = image_src[read_index];
-			if (color_mode == 4)
-				image_dest[write_index+3] = image_src[read_index+3];
-			else
-				image_dest[write_index+3] = 255;
-			
-			write_index += 4;
-			read_index += color_mode;
-		}
-	}
-
-	texture_dimensions.x = header.width;
-	texture_dimensions.y = header.height;
-	
-	bool success = GenerateTexture(texture_handle, image_dest, texture_dimensions);
-	
-	delete [] image_dest;
-	delete [] buffer;
-	
-	return success;
+    return (bool)texture_handle;
 }
 
 // Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
-bool ShellRenderInterfaceOpenGL::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
+bool SDLRenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
 {
 	GLuint texture_id = 0;
 	glGenTextures(1, &texture_id);
@@ -204,20 +177,21 @@ bool ShellRenderInterfaceOpenGL::GenerateTexture(Rocket::Core::TextureHandle& te
 
 	glBindTexture(GL_TEXTURE_2D, texture_id);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, source_dimensions.x, source_dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, source);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, source_dimensions.x, source_dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, source);
+
 	texture_handle = (Rocket::Core::TextureHandle) texture_id;
 
-	return true;
+	return (bool)texture_handle;
 }
 
 // Called by Rocket when a loaded texture is no longer required.		
-void ShellRenderInterfaceOpenGL::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
+void SDLRenderInterface::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
 {
 	glDeleteTextures(1, (GLuint*) &texture_handle);
 }

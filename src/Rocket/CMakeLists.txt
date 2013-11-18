@@ -84,7 +84,7 @@ mark_as_advanced(FREETYPE_INCLUDE_DIRS FREETYPE_LIBRARY FREETYPE_LINK_DIRECTORIE
 #===================================
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 #set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/..)
@@ -128,6 +128,8 @@ foreach(library ${LIBRARIES})
     )
 endforeach(library)
 
+#SDLCore
+add_subdirectory(SDLCore)
 
 #===================================
 # Link libraries ===================
