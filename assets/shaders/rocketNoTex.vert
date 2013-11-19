@@ -4,7 +4,6 @@ uniform vec2 translation;
 
 attribute vec2 vertexPosition;
 attribute vec4 vertexColor;
-attribute vec2 vertexTexCoord;
 
 varying vec4 fragColor;
 

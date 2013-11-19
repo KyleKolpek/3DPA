@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stdgl.h>
 #include <SDL.h>
+#include <Rocket/Core.h>
+#include "Rocket/SDLCore/SDLRenderInterface.h"
+#include "Rocket/SDLCore/SDLSystemInterface.h"
 #include "Config.h"
 #include "CubeManager.h"
 #include "CubeGenerator.h"
@@ -81,8 +84,11 @@ int main(int argc, char *argv[])
                                   SDL_WINDOW_OPENGL |
                                   SDL_WINDOW_SHOWN |
                                   SDL_WINDOW_RESIZABLE);
-    if (!mainwindow) /* Die if creation failed */
+    // Die if creation failed 
+    if (!mainwindow)
+    {
         sdldie("Unable to create window");
+    }
     checkSDLError(__LINE__);
 
     /* Create our opengl context and attach it to our window */
@@ -108,7 +114,7 @@ int main(int argc, char *argv[])
     }
 
     // Disable Culling
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -153,16 +159,60 @@ int main(int argc, char *argv[])
     cg.cubeManager = &cm;
     cg.setShaderManager(&sm);
 
-    mapper.pushContext("maincontext");
-    mapper.addCallback(&vp.getCurrentCamera(), 0);
-    mapper.addCallback(&cg, 0);
-
     Renderer r;
     r.addViewport(&vp);
     r.addModel(&cm);
     r.addModel(&cg);
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Set up Rocket
+    ////////////////////////////////////////////////////////////////////////////
+    SDLRenderInterface rocketRenderer;
+    rocketRenderer.SetShaderManager(&sm);
+    Rocket::Core::SetRenderInterface(&rocketRenderer);
+    rocketRenderer.SetViewport(1024, 1024);
 
-    /* GAME LOOP */
+    SDLSystemInterface rocketSystem;
+    Rocket::Core::SetSystemInterface(&rocketSystem);
+
+    Rocket::Core::Initialise();
+    Rocket::Core::Context* rocketContext =
+        Rocket::Core::CreateContext("default",
+                                    Rocket::Core::Vector2i(1024, 1024));
+    if(rocketContext == NULL)
+    {
+        std::cerr << "Error creating Rocket context." << std::endl;
+        Rocket::Core::Shutdown();
+        return 1;
+    }
+
+    Rocket::Core::FontDatabase::LoadFontFace(
+        Rocket::Core::String("../assets/fonts/Delicious-Roman.otf"));
+    Rocket::Core::FontDatabase::LoadFontFace(
+        Rocket::Core::String("../assets/fonts/Delicious-Italic.otf"));
+    Rocket::Core::FontDatabase::LoadFontFace(
+        Rocket::Core::String("../assets/fonts/Delicious-Bold.otf"));
+    Rocket::Core::FontDatabase::LoadFontFace(
+        Rocket::Core::String("../assets/fonts/Delicious-BoldItalic.otf"));
+
+    Rocket::Core::ElementDocument *document =
+        rocketContext->LoadDocument("../assets/Rocket/tutorial.rml");
+    if(document != NULL)
+    {
+        document->Show();
+        document->RemoveReference();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Set up input
+    ////////////////////////////////////////////////////////////////////////////
+    mapper.pushContext("maincontext");
+    mapper.addCallback(&vp.getCurrentCamera(), 0);
+    mapper.addCallback(&cg, 0);
+
+    ////////////////////////////////////////////////////////////////////////////
+    // GAME LOOP
+    ////////////////////////////////////////////////////////////////////////////
     while(!quit)
     {
         /* Clear our buffer with a black background */
@@ -234,8 +284,13 @@ int main(int argc, char *argv[])
         mapper.dispatch();
         mapper.reset();
 
+        // Rocket Updates
+        rocketContext->Update();
+        rocketContext->Render();
+
         cg.moveTo(vp.getCurrentCamera().getAt());
         r.render();
+
         while(GLenum e = glGetError())
         {
             std::cerr << "GL Error: " << std::hex << e << std::endl;
@@ -245,6 +300,12 @@ int main(int argc, char *argv[])
     }
  
     /* Delete random stuff */
+
+    /* Shut down rocket */
+    rocketContext->RemoveReference();
+    Rocket::Core::Shutdown();
+    // Example of how to unload documents
+    document->GetContext()->UnloadDocument(document);
 
     /* Delete our opengl context, destroy our window, and shutdown SDL */
     SDL_GL_DeleteContext(maincontext);

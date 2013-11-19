@@ -71,24 +71,58 @@ typedef struct {
 #define DDSCAPS2_CUBEMAP_NEGATIVEZ	0x00008000
 #define DDSCAPS2_VOLUME	0x00200000
 
-static int dds_test(stbi *s)
+static int stbi_dds_test(stbi *s)
 {
 	//	check the magic number
-	if (get8(s) != 'D') return 0;
-	if (get8(s) != 'D') return 0;
-	if (get8(s) != 'S') return 0;
-	if (get8(s) != ' ') return 0;
+	if (get8(s) != 'D') {
+		stbi_rewind(s);
+		return 0;
+	}
+
+	if (get8(s) != 'D') {
+		stbi_rewind(s);
+		return 0;
+	}
+
+	if (get8(s) != 'S') {
+		stbi_rewind(s);
+		return 0;
+	}
+
+	if (get8(s) != ' ') {
+		stbi_rewind(s);
+		return 0;
+	}
+
 	//	check header size
-	if (get32le(s) != 124) return 0;
+	if (get32le(s) != 124) {
+		stbi_rewind(s);
+		return 0;
+	}
+
+	// Also rewind because the loader needs to read the header
+	stbi_rewind(s);
+
 	return 1;
 }
 #ifndef STBI_NO_STDIO
+
+int      stbi_dds_test_filename        		(char const *filename)
+{
+   int r;
+   FILE *f = fopen(filename, "rb");
+   if (!f) return 0;
+   r = stbi_dds_test_file(f);
+   fclose(f);
+   return r;
+}
+
 int      stbi_dds_test_file        (FILE *f)
 {
    stbi s;
    int r,n = ftell(f);
    start_file(&s,f);
-   r = dds_test(&s);
+   r = stbi_dds_test(&s);
    fseek(f,n,SEEK_SET);
    return r;
 }
@@ -98,7 +132,14 @@ int      stbi_dds_test_memory      (stbi_uc const *buffer, int len)
 {
    stbi s;
    start_mem(&s,buffer, len);
-   return dds_test(&s);
+   return stbi_dds_test(&s);
+}
+
+int      stbi_dds_test_callbacks      (stbi_io_callbacks const *clbk, void *user)
+{
+   stbi s;
+   start_callbacks(&s, (stbi_io_callbacks *) clbk, user);
+   return stbi_dds_test(&s);
 }
 
 //	helper functions
@@ -265,7 +306,104 @@ void stbi_decode_DXT_color_block(
 	}
 	//	done
 }
-static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+
+static int stbi_dds_info( stbi *s, int *x, int *y, int *comp, int *iscompressed ) {
+	int flags,is_compressed,has_alpha;
+	DDS_header header;
+
+	if( sizeof( DDS_header ) != 128 )
+	{
+		return 0;
+	}
+
+	getn( s, (stbi_uc*)(&header), 128 );
+
+	if( header.dwMagic != (('D' << 0) | ('D' << 8) | ('S' << 16) | (' ' << 24)) ) {
+	   stbi_rewind( s );
+	   return 0;
+	}
+	if( header.dwSize != 124 ) {
+	   stbi_rewind( s );
+	   return 0;
+	}
+	flags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
+	if( (header.dwFlags & flags) != flags ) {
+	   stbi_rewind( s );
+	   return 0;
+	}
+	if( header.sPixelFormat.dwSize != 32 ) {
+	   stbi_rewind( s );
+	   return 0;
+	}
+	flags = DDPF_FOURCC | DDPF_RGB;
+	if( (header.sPixelFormat.dwFlags & flags) == 0 ) {
+	   stbi_rewind( s );
+	   return 0;
+	}
+	if( (header.sCaps.dwCaps1 & DDSCAPS_TEXTURE) == 0 ) {
+	   stbi_rewind( s );
+	   return 0;
+	}
+
+	is_compressed = (header.sPixelFormat.dwFlags & DDPF_FOURCC) / DDPF_FOURCC;
+	has_alpha = (header.sPixelFormat.dwFlags & DDPF_ALPHAPIXELS) / DDPF_ALPHAPIXELS;
+
+	*x = header.dwWidth;
+	*y = header.dwHeight;
+
+	if ( !is_compressed ) {
+		*comp = 3;
+
+		if ( has_alpha )
+			*comp = 4;
+	}
+	else
+		*comp = 4;
+
+	if ( iscompressed )
+		*iscompressed = is_compressed;
+
+	return 1;
+}
+
+int stbi_dds_info_from_memory (stbi_uc const *buffer, int len, int *x, int *y, int *comp, int *iscompressed)
+{
+	stbi s;
+	start_mem(&s,buffer, len);
+	return stbi_dds_info( &s, x, y, comp, iscompressed );
+}
+
+int stbi_dds_info_from_callbacks (stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int *iscompressed)
+{
+	stbi s;
+	start_callbacks(&s, (stbi_io_callbacks *) clbk, user);
+	return stbi_dds_info( &s, x, y, comp, iscompressed );
+}
+
+#ifndef STBI_NO_STDIO
+int stbi_dds_info_from_path(char const *filename,     int *x, int *y, int *comp, int *iscompressed)
+{
+   int res;
+   FILE *f = fopen(filename, "rb");
+   if (!f) return 0;
+   res = stbi_dds_info_from_file( f, x, y, comp, iscompressed );
+   fclose(f);
+   return res;
+}
+
+int stbi_dds_info_from_file(FILE *f,                  int *x, int *y, int *comp, int *iscompressed)
+{
+   stbi s;
+   int res;
+   long n = ftell(f);
+   start_file(&s, f);
+   res = stbi_dds_info(&s, x, y, comp, iscompressed);
+   fseek(f, n, SEEK_SET);
+   return res;
+}
+#endif
+
+static stbi_uc * stbi_dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
 	//	all variables go up front
 	stbi_uc *dds_data = NULL;
@@ -359,11 +497,11 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 					stbi_decode_DXT_color_block ( block, compressed );
 				}
 				//	is this a partial block?
-				if( ref_x + 4 > s->img_x )
+				if( ref_x + 4 > (int)s->img_x )
 				{
 					bw = s->img_x - ref_x;
 				}
-				if( ref_y + 4 > s->img_y )
+				if( ref_y + 4 > (int)s->img_y )
 				{
 					bh = s->img_y - ref_y;
 				}
@@ -387,7 +525,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 				{
 					block_size = 8;
 				}
-				for( i = 1; i < header.dwMipMapCount; ++i )
+				for( i = 1; i < (int)header.dwMipMapCount; ++i )
 				{
 					int mx = s->img_x >> (i + 2);
 					int my = s->img_y >> (i + 2);
@@ -424,7 +562,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 				skip MIPmaps if present	*/
 			if( has_mipmap )
 			{
-				for( i = 1; i < header.dwMipMapCount; ++i )
+				for( i = 1; i < (int)header.dwMipMapCount; ++i )
 				{
 					int mx = s->img_x >> i;
 					int my = s->img_y >> i;
@@ -469,7 +607,7 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 		if( req_comp != s->img_n )
 		{
 			dds_data = convert_format( dds_data, s->img_n, req_comp, s->img_x, s->img_y );
-			*comp = s->img_n;
+			*comp = req_comp;
 		}
 	} else
 	{
@@ -488,11 +626,11 @@ static stbi_uc *dds_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 stbi_uc *stbi_dds_load_from_file   (FILE *f,                  int *x, int *y, int *comp, int req_comp)
 {
 	stbi s;
-   start_file(&s,f);
-   return dds_load(&s,x,y,comp,req_comp);
+	start_file(&s,f);
+	return stbi_dds_load(&s,x,y,comp,req_comp);
 }
 
-stbi_uc *stbi_dds_load             (char *filename,           int *x, int *y, int *comp, int req_comp)
+stbi_uc *stbi_dds_load_from_path             (const char *filename,           int *x, int *y, int *comp, int req_comp)
 {
    stbi_uc *data;
    FILE *f = fopen(filename, "rb");
@@ -507,5 +645,12 @@ stbi_uc *stbi_dds_load_from_memory (stbi_uc const *buffer, int len, int *x, int 
 {
 	stbi s;
    start_mem(&s,buffer, len);
-   return dds_load(&s,x,y,comp,req_comp);
+   return stbi_dds_load(&s,x,y,comp,req_comp);
+}
+
+stbi_uc *stbi_dds_load_from_callbacks (stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int req_comp)
+{
+	stbi s;
+   start_callbacks(&s, (stbi_io_callbacks *) clbk, user);
+   return stbi_dds_load(&s,x,y,comp,req_comp);
 }

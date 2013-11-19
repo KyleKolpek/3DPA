@@ -27,7 +27,7 @@
 
 #include "SDLRenderInterface.h"
 #include <Rocket/Core.h>
-#include "SOIL/SOIL.h"
+#include "SOIL2/SOIL2.h"
 #include "../../ShaderManager.h"
 #include <iostream>
 
@@ -74,41 +74,70 @@ void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
 	{
         program = shaderManager->getProgram(2, "rocketNoTex.vert",
                                                "rocketNoTex.frag");
+        glUseProgram(program);
 	}
 	else
 	{
         program = shaderManager->getProgram(2, "rocketTex.vert",
                                                "rocketTex.frag");
-        texCoordLoc = glGetAttribLocation(program, "vertexTexCoord");
+        glUseProgram(program);
+        
+        // Set up the texture
+        texSamplerLoc = glGetUniformLocation(program, "texture");
+        if(texSamplerLoc == -1)
+        {
+            std::cerr << "Error: cannot find texture location." << std::endl;
+            return;
+        }
 
+        glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, (GLuint) texture);
+        glUniform1i(texSamplerLoc, 0);
+        
+        // Set up the per vertex texture coords 
+        texCoordLoc = glGetAttribLocation(program, "vertexTexCoord");
+        if(texCoordLoc == -1)
+        {
+            std::cerr << "Error: cannot find texture coord location."
+                      << std::endl;
+            return;
+        }
         glEnableVertexAttribArray(texCoordLoc);
         glVertexAttribPointer(texCoordLoc, 2, GL_FLOAT, GL_FALSE,
                               sizeof(Rocket::Core::Vertex),
                               (void*) (sizeof(Rocket::Core::Vector2f) +
                               sizeof(Rocket::Core::Colourb)));
-
-        glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, (GLuint) texture);
-        texSamplerLoc = glGetUniformLocation(program, "texture");
-        glUniform1i(texSamplerLoc, 0);
 	}
-    
+
     translationLoc = glGetUniformLocation(program, "translation");
     glUniform2f(translationLoc, translation.x, translation.y);
 
     // Draw the geometry
     vertexPosLoc = glGetAttribLocation(program, "vertexPosition");
+    if(vertexPosLoc == -1)
+    {
+        std::cerr << "Error: cannot find vertex position location."
+                  << std::endl;
+        return;
+    }
+
     vertexColorLoc = glGetAttribLocation(program, "vertexColor");
+    if(vertexColorLoc == -1)
+    {
+        std::cerr << "Error: cannot find vertex color location."
+                  << std::endl;
+        return;
+    }
     
     glEnableVertexAttribArray(vertexPosLoc);
     glEnableVertexAttribArray(vertexColorLoc);
 
     glVertexAttribPointer(vertexPosLoc, 2, GL_FLOAT, GL_FALSE,
                               sizeof(Rocket::Core::Vertex), 0);
-    glVertexAttribPointer(vertexColorLoc, 4, GL_UNSIGNED_BYTE, GL_FALSE,
+    glVertexAttribPointer(vertexColorLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE,
                               sizeof(Rocket::Core::Vertex),
                               (void*) sizeof(Rocket::Core::Vector2f));
-
+    
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
 
     glDisableVertexAttribArray(vertexPosLoc);
@@ -116,6 +145,8 @@ void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     glDisableVertexAttribArray(texCoordLoc);
     glDeleteBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glUseProgram(0);
+
 }
 
 // Called by Rocket when it wants to compile geometry it believes will be static for the forseeable future.		

@@ -50,11 +50,11 @@ target_link_libraries(CubeManager Cube Drawable MortonNumber)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeManager) 
 
 # Compile SOIL
-add_subdirectory(SOIL)
-set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL)
+add_subdirectory(SOIL2)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL2)
 
 add_subdirectory(Rocket)
-set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore SDLCore)
 
 # Compile Viewport
 add_library(Viewport
