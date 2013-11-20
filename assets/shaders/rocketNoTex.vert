@@ -9,6 +9,6 @@ varying vec4 fragColor;
 
 void main(void)
 {
-	gl_Position = vec4(vertexPosition + translation, 0.0, 1.0);
+    gl_Position = vec4(vertexPosition + translation, 0.0, 1.0);
     fragColor = vertexColor;
 }
