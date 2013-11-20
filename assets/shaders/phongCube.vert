@@ -15,9 +15,9 @@ varying vec3 fragColor;
 
 void main(void)
 {
-	vec4 p = modelView * vec4(vertexPosition + cubePosition, 1.0);
-	gl_Position = projection * p;
-	cameraSpacePos = p.xyz;
-	normal = normalize(normalModelView * vec4(vertexNormal, 0.0)).xyz;
+    vec4 p = modelView * vec4(vertexPosition + cubePosition, 1.0);
+    gl_Position = projection * p;
+    cameraSpacePos = p.xyz;
+    normal = normalize(normalModelView * vec4(vertexNormal, 0.0)).xyz;
     fragColor = vertexColor;
 }
