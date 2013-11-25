@@ -284,12 +284,12 @@ int main(int argc, char *argv[])
         mapper.dispatch();
         mapper.reset();
 
+        cg.moveTo(vp.getCurrentCamera().getAt());
+        r.render();
+
         // Rocket Updates
         rocketContext->Update();
         rocketContext->Render();
-
-        cg.moveTo(vp.getCurrentCamera().getAt());
-        r.render();
 
         while(GLenum e = glGetError())
         {

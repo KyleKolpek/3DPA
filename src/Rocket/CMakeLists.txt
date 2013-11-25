@@ -48,7 +48,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-option(BUILD_SAMPLES "Build samples" OFF)
+option(BUILD_SAMPLES "Build samples" ON)
 
 if(NOT BUILD_SHARED_LIBS)
     add_definitions(-DSTATIC_LIB)
@@ -173,6 +173,7 @@ if(BUILD_SAMPLES)
     	RocketCore 
     	RocketControls
     	RocketDebugger
+        SOIL2
     )
 
 	# Find OpenGL 

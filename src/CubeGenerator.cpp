@@ -101,6 +101,8 @@ void CubeGenerator::draw(GLuint program)
     // TODO: Change GL_TRIANGLES to account for modelData->vertexType
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, Cube::vertexCount, 1);
 
+    glVertexAttribDivisor(cubePosLoc, 0);
+    glVertexAttribDivisor(vertexColorLoc, 0);
     glDisableVertexAttribArray(vertexPosLoc);
     glDisableVertexAttribArray(vertexNormalLoc);
     glDisableVertexAttribArray(cubePosLoc);

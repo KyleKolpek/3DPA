@@ -10,14 +10,14 @@ body
 body.window
 {
 	background-decorator: tiled-box;
-	background-top-left-image: ../Rocket/images/invader.tga 0px 0px 133px 140px;
-	background-top-right-image: ../Rocket/images/invader.tga 136px 0px 146px 140px;
-	background-top-image: ../Rocket/images/invader.tga stretch 134px 0px 135px 140px;
-	background-bottom-left-image: ../Rocket/images/invader.tga 0px 140px 11px 151px;
-	background-bottom-right-image: ../Rocket/images/invader.tga 136px 140px 146px 151px;
-	background-bottom-image: ../Rocket/images/invader.tga stretch 11px 140px 12px 151px;
-	background-left-image: ../Rocket/images/invader.tga stretch 0px 139px 10px 140px;
-	background-center-image: ../Rocket/images/invader.tga stretch 11px 139px 12px 140px;
+	background-top-left-image: images/invader.tga 0px 0px 133px 140px;
+	background-top-right-image: images/invader.tga 136px 0px 146px 140px;
+	background-top-image: images/invader.tga stretch 134px 0px 135px 140px;
+	background-bottom-left-image: images/invader.tga 0px 140px 11px 151px;
+	background-bottom-right-image: images/invader.tga 136px 140px 146px 151px;
+	background-bottom-image: images/invader.tga stretch 11px 140px 12px 151px;
+	background-left-image: images/invader.tga stretch 0px 139px 10px 140px;
+	background-center-image: images/invader.tga stretch 11px 139px 12px 140px;
 }
 
 div

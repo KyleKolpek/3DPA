@@ -52,22 +52,28 @@ void SDLRenderInterface::SetShaderManager(ShaderManager *sm)
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.
 void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
-    
-    // TODO: Check glGetAttribLocation calls for success
-
+        
     GLuint program;
     GLuint vertexBuffer;
-    GLuint vertexPosLoc   = 0;
-    GLuint vertexColorLoc = 0;
-    GLuint texCoordLoc    = 0;
-    GLuint texSamplerLoc  = 0;
-    GLuint translationLoc = 0;
+    GLuint indexBuffer;
+    GLuint vertexPosLoc      = 0;
+    GLuint vertexColorLoc    = 0;
+    GLuint vertexTexCoordLoc = 0;
+    GLuint texSamplerLoc     = 0;
+    GLuint translationLoc    = 0;
+    GLuint viewDimLoc        = 0;
 
     // Populate vertex buffer
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Rocket::Core::Vertex) * num_vertices,
                  vertices, GL_STATIC_DRAW);
+
+    // Populate index buffer
+    glGenBuffers(1, &indexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices,
+                 indices, GL_STATIC_DRAW);
 
     // Handle textures
 	if (!texture)
@@ -81,70 +87,67 @@ void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
         program = shaderManager->getProgram(2, "rocketTex.vert",
                                                "rocketTex.frag");
         glUseProgram(program);
-        
         // Set up the texture
-        texSamplerLoc = glGetUniformLocation(program, "texture");
-        if(texSamplerLoc == -1)
+        texSamplerLoc = glGetUniformLocation(program, "texSampler");
+        vertexTexCoordLoc = glGetAttribLocation(program, "vertexTexCoord");
+        if(texSamplerLoc != -1)
         {
-            std::cerr << "Error: cannot find texture location." << std::endl;
-            return;
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, (GLuint) texture);
+            glUniform1i(texSamplerLoc, 0);
+        }
+        if(vertexTexCoordLoc != -1)
+        {
+            // Set up the per vertex texture coords 
+            glEnableVertexAttribArray(vertexTexCoordLoc);
+            glVertexAttribPointer(vertexTexCoordLoc, 2, GL_FLOAT, GL_FALSE,
+                                  sizeof(Rocket::Core::Vertex),
+                                  (void*) (sizeof(Rocket::Core::Vector2f) +
+                                  sizeof(Rocket::Core::Colourb)));
         }
 
-        glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, (GLuint) texture);
-        glUniform1i(texSamplerLoc, 0);
-        
-        // Set up the per vertex texture coords 
-        texCoordLoc = glGetAttribLocation(program, "vertexTexCoord");
-        if(texCoordLoc == -1)
-        {
-            std::cerr << "Error: cannot find texture coord location."
-                      << std::endl;
-            return;
-        }
-        glEnableVertexAttribArray(texCoordLoc);
-        glVertexAttribPointer(texCoordLoc, 2, GL_FLOAT, GL_FALSE,
-                              sizeof(Rocket::Core::Vertex),
-                              (void*) (sizeof(Rocket::Core::Vector2f) +
-                              sizeof(Rocket::Core::Colourb)));
 	}
 
+    // Set up uniforms
     translationLoc = glGetUniformLocation(program, "translation");
-    glUniform2f(translationLoc, translation.x, translation.y);
+    viewDimLoc = glGetUniformLocation(program, "viewDimensions");
+    if(translationLoc != -1)
+    {
+        glUniform2f(translationLoc, translation.x, translation.y);
+    }
+    if(viewDimLoc != -1)
+    {
+        glUniform2f(viewDimLoc, m_width, m_height);
+    }
+    
+    // Set up per-vertex attributes
+    vertexPosLoc = glGetAttribLocation(program, "vertexPosition");
+    vertexColorLoc = glGetAttribLocation(program, "vertexColor");
+    if(vertexPosLoc != -1)
+    {
+        glEnableVertexAttribArray(vertexPosLoc);
+        glVertexAttribPointer(vertexPosLoc, 2, GL_FLOAT, GL_FALSE,
+                                  sizeof(Rocket::Core::Vertex), 0);
+    }
+
+    if(vertexColorLoc != -1)
+    {
+        glEnableVertexAttribArray(vertexColorLoc);
+        glVertexAttribPointer(vertexColorLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE,
+                                  sizeof(Rocket::Core::Vertex),
+                                  (void*) sizeof(Rocket::Core::Vector2f));
+    }
 
     // Draw the geometry
-    vertexPosLoc = glGetAttribLocation(program, "vertexPosition");
-    if(vertexPosLoc == -1)
-    {
-        std::cerr << "Error: cannot find vertex position location."
-                  << std::endl;
-        return;
-    }
-
-    vertexColorLoc = glGetAttribLocation(program, "vertexColor");
-    if(vertexColorLoc == -1)
-    {
-        std::cerr << "Error: cannot find vertex color location."
-                  << std::endl;
-        return;
-    }
-    
-    glEnableVertexAttribArray(vertexPosLoc);
-    glEnableVertexAttribArray(vertexColorLoc);
-
-    glVertexAttribPointer(vertexPosLoc, 2, GL_FLOAT, GL_FALSE,
-                              sizeof(Rocket::Core::Vertex), 0);
-    glVertexAttribPointer(vertexColorLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE,
-                              sizeof(Rocket::Core::Vertex),
-                              (void*) sizeof(Rocket::Core::Vector2f));
-    
-	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
+	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, 0);
 
     glDisableVertexAttribArray(vertexPosLoc);
     glDisableVertexAttribArray(vertexColorLoc);
-    glDisableVertexAttribArray(texCoordLoc);
+    glDisableVertexAttribArray(vertexTexCoordLoc);
     glDeleteBuffers(1, &vertexBuffer);
+    glDeleteBuffers(1, &indexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glUseProgram(0);
 
 }
@@ -189,10 +192,14 @@ bool SDLRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle
         source.CString(),
         SOIL_LOAD_AUTO,
         SOIL_CREATE_NEW_ID,
-        SOIL_FLAG_MIPMAPS       | SOIL_FLAG_INVERT_Y | 
-        SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+        SOIL_FLAG_MIPMAPS |
+        SOIL_FLAG_NTSC_SAFE_RGB |
+        SOIL_FLAG_COMPRESS_TO_DXT);
 
-    return (bool)texture_handle;
+    texture_dimensions.x = 512;
+    texture_dimensions.y = 512;
+
+    return (bool) texture_handle;
 }
 
 // Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
@@ -218,7 +225,7 @@ bool SDLRenderInterface::GenerateTexture(Rocket::Core::TextureHandle& texture_ha
 
 	texture_handle = (Rocket::Core::TextureHandle) texture_id;
 
-	return (bool)texture_handle;
+	return true;
 }
 
 // Called by Rocket when a loaded texture is no longer required.		

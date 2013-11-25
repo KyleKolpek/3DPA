@@ -27,6 +27,7 @@
 
 #include <ShellRenderInterfaceOpenGL.h>
 #include <Rocket/Core.h>
+#include "SOIL2/SOIL2.h"
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
@@ -44,6 +45,10 @@ void ShellRenderInterfaceOpenGL::SetViewport(int width, int height)
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.
 void ShellRenderInterfaceOpenGL::RenderGeometry(Rocket::Core::Vertex* vertices, int ROCKET_UNUSED(num_vertices), int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
+    if(vertices[0].position.x !=0 || vertices[0].position.y !=0)
+    {
+        return;
+    }
 	glPushMatrix();
 	glTranslatef(translation.x, translation.y, 0);
 
