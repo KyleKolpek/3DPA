@@ -13,5 +13,10 @@
 	</style>
 </head>
 <body class="window">
+        <div id="title-bar">
+        <handle move target="#document">
+            <span id="title">Dummy Title</span>
+        </handle>
+    </div>
 </body>
 </rml>

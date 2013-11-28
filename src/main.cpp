@@ -232,6 +232,11 @@ int main(int argc, char *argv[])
                                        0,
                                        event.window.data1,
                                        event.window.data2);
+                            rocketRenderer.SetViewport(event.window.data1,
+                                                       event.window.data2);
+                            rocketContext->SetDimensions(
+                                Rocket::Core::Vector2i(event.window.data1,
+                                                       event.window.data2));
                             break;
                     }
                     break;
@@ -302,10 +307,10 @@ int main(int argc, char *argv[])
     /* Delete random stuff */
 
     /* Shut down rocket */
-    rocketContext->RemoveReference();
-    Rocket::Core::Shutdown();
     // Example of how to unload documents
     document->GetContext()->UnloadDocument(document);
+    rocketContext->RemoveReference();
+    Rocket::Core::Shutdown();
 
     /* Delete our opengl context, destroy our window, and shutdown SDL */
     SDL_GL_DeleteContext(maincontext);
