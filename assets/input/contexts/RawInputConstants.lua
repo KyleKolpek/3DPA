@@ -1,12 +1,4 @@
-#ifndef RAWINPUTCONSTANTS_H
-#define RAWINPUTCONSTANTS_H
-
-#include <SDL_events.h>
-
-namespace Input
-{
-
-enum RawButton
+RawButton = 
 {
     RAW_BUTTON_UP              = 0x10000001,
     RAW_BUTTON_DOWN            = 0x10000002,
@@ -42,15 +34,9 @@ enum RawButton
     RAW_BUTTON_LEFT_MOUSE      = 0x10000032,
     RAW_BUTTON_RIGHT_MOUSE     = 0x10000033,
     RAW_BUTTON_MIDDLE_MOUSE    = 0x10000034,
-}; 
-enum RawAxis
+}
+RawAxis = 
 {
     RAW_AXIS_MOUSE_X           = 0x20000001,
     RAW_AXIS_MOUSE_Y           = 0x20000002,
-};
-
-RawButton convertToRawButton(SDL_Event e);
-
 }
-
-#endif

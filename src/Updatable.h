@@ -1,7 +1,6 @@
 #ifndef UPDATABLE_H
 #define UPDATABLE_H
 
-#include "stdgl.h"
 #include "InputMapper.h"
 
 /***************************************************************************//**

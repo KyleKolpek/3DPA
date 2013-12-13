@@ -2,6 +2,7 @@
 
 using namespace Input;
 
+// TODO: Change this to use a map if possible
 RawButton Input::convertToRawButton(SDL_Event e)
 {
     switch(e.type)

@@ -46,8 +46,7 @@ void checkSDLError(int line = -1)
         }
 #endif
 }
- 
- 
+
 /* Our program's entry point */
 int main(int argc, char *argv[])
 {
@@ -278,6 +277,9 @@ int main(int argc, char *argv[])
                     mapper.processAxisInput(Input::RAW_AXIS_MOUSE_Y,
                                             static_cast<double>(
                                                 event.motion.yrel));
+                    break;
+                case SDL_TEXTINPUT:
+                    mapper.processTextInput(event.text.text);
                     break;
                 case SDL_QUIT:
                     quit = true;

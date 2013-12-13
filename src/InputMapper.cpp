@@ -115,6 +115,11 @@ void InputMapper::processAxisInput(RawAxis axis, float value)
     }
 }
 
+void InputMapper::processTextInput(char *c)
+{
+    currentInput.text.append(c);
+}
+
 bool InputMapper::getActionFromActiveContexts(RawButton button,
                                               Action& action) const
 {
@@ -166,6 +171,7 @@ void InputMapper::reset()
 {
     currentInput.actions.clear();
     currentInput.ranges.clear();
+    currentInput.text.erase();
 }
 
 void InputMapper::clearInputPerButton(RawButton button)

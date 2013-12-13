@@ -56,6 +56,9 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL2)
 add_subdirectory(Rocket)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore SDLCore)
 
+add_subdirectory(Luatable)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Luatable)
+
 # Compile Viewport
 add_library(Viewport
             Viewport.cpp)

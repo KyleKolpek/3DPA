@@ -1,15 +1,9 @@
-#ifndef INPUTCONSTANTS_H
-#define INPUTCONSTANTS_H
-
-namespace Input
-{
-
-enum Action
+Action =
 {
     ACTION_ADD_CUBE             = 0x10000001,
-};
+}
 
-enum State
+State =
 {
     STATE_CAMERA_MOVE_UP        = 0x20000001,
     STATE_CAMERA_MOVE_DOWN      = 0x20000002,
@@ -20,12 +14,8 @@ enum State
     STATE_CAMERA_ROTATE         = 0x20000007
 };
 
-enum Range
+Range = 
 {
     RANGE_ROTATE_CAMERA_X       = 0x40000001,
     RANGE_ROTATE_CAMERA_Y       = 0x40000002
-};
-
 }
-
-#endif

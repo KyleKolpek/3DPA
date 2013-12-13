@@ -17,6 +17,7 @@ public:
     std::set<Input::Action> actions;
     std::set<Input::State> states;
     std::map<Input::Range, float> ranges;
+    std::string text;
 
     void removeAction(Input::Action action);
     void removeState(Input::State state);
@@ -29,10 +30,6 @@ public:
     InputMapper();
     ~InputMapper();
     
-    // NOTE: This may be better represented as an interface than a function
-    // pointer
-    //typedef void (*InputCallback)(InputMap&);
-
     void addCallback(Updatable *callback, int priority);
     void pushContext(const std::string& contextName);
     void popContext();
@@ -42,10 +39,9 @@ public:
     bool getStateFromActiveContexts(Input::RawButton button,
                                     Input::State& state) const;
 
-    void processButtonInput(Input::RawButton button,
-                            bool pressed,
-                            bool repeat);
+    void processButtonInput(Input::RawButton button, bool pressed, bool repeat);
     void processAxisInput(Input::RawAxis axis, float value);
+    void processTextInput(char *c);
 
     void dispatch() const;
     void reset();
