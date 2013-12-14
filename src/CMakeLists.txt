@@ -83,7 +83,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} RangeConverter)
 
 add_library(InputContext
             InputContext.cpp)
-target_link_libraries(InputContext RangeConverter RawInputConstants)
+target_link_libraries(InputContext RangeConverter RawInputConstants Luatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} InputContext)
 
 add_library(InputMapper

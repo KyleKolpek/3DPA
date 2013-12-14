@@ -1,4 +1,6 @@
 #include "InputContext.h"
+#include "Luatable/Value.h"
+#include <iostream>
 
 using namespace Input;
 using namespace std;
@@ -7,6 +9,11 @@ InputContext::InputContext():conversions(NULL)
 {
     // Set up mappings here.
     // TODO: change this to take input from a file
+    Luatable::Value mainContext;
+    if(mainContext.loadFromFile("../assets/input/contexts/MainContext.lua"))
+            std::cout << "Success " << mainContext["states"][RAW_BUTTON_W].asInt() << std::endl;
+
+    /*
     states[RAW_BUTTON_W] = STATE_CAMERA_MOVE_FORWARD;
     states[RAW_BUTTON_S] = STATE_CAMERA_MOVE_BACK;
     states[RAW_BUTTON_A] = STATE_CAMERA_MOVE_LEFT;
@@ -22,7 +29,7 @@ InputContext::InputContext():conversions(NULL)
     ranges[RAW_AXIS_MOUSE_Y] = RANGE_ROTATE_CAMERA_Y;
 
     sensitivities[RANGE_ROTATE_CAMERA_X] = 1.5;
-    sensitivities[RANGE_ROTATE_CAMERA_Y] = 1.5;
+    sensitivities[RANGE_ROTATE_CAMERA_Y] = 1.5;*/
     conversions = new RangeConverter();
 }
 
