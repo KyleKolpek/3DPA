@@ -1,5 +1,5 @@
-dofile("../assets/input/contexts/RawInputConstants.lua")
-dofile("../assets/input/contexts/InputConstants.lua")
+dofile("../assets/input/RawInputConstants.lua")
+dofile("../assets/input/InputConstants.lua")
 
 local context = {
     states = {
@@ -22,6 +22,7 @@ local context = {
         [Range.ROTATE_CAMERA_X] = 1.5,
         [Range.ROTATE_CAMERA_Y] = 1.5,
     },
+    rangeConverter = "MainRangeConverter.lua",
 }
 
 return context

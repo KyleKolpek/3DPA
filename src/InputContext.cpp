@@ -3,19 +3,16 @@
 #include <iostream>
 
 using namespace Input;
-using namespace std;
 
 InputContext::InputContext():conversions(NULL)
 {
     // Set up mappings here.
-    // TODO: change this to take input from a file
     Luatable::Value mainContext;
     if(!mainContext.loadFromFile("../assets/input/contexts/MainContext.lua"))
     {
         std::cerr << "Error opening input context files." << std::endl;
     }
     std::map<Luatable::Key, Luatable::Value>::iterator i;
-    cout << hex;
     for(i = mainContext["states"].begin();
         i != mainContext["states"].end();
         i++)
@@ -37,10 +34,14 @@ InputContext::InputContext():conversions(NULL)
         ranges[static_cast<RawAxis>(i->first.asInt())] =
             static_cast<Range>(i->second.asInt());
     }
-    
-    sensitivities[RANGE_ROTATE_CAMERA_X] = 1.5;
-    sensitivities[RANGE_ROTATE_CAMERA_Y] = 1.5;
-    conversions = new RangeConverter();
+    for(i = mainContext["sensitivities"].begin();
+        i != mainContext["sensitivities"].end();
+        i++)
+    {
+        sensitivities[static_cast<Range>(i->first.asInt())] =
+            i->second.asDouble();
+    }
+    conversions = new RangeConverter(mainContext["rangeConverter"].asString());
 }
 
 InputContext::~InputContext()
@@ -50,7 +51,7 @@ InputContext::~InputContext()
 
 bool InputContext::getMappedAction(RawButton button, Action& action) const
 {
-    map<RawButton, Action>::const_iterator iter = actions.find(button);
+    std::map<RawButton, Action>::const_iterator iter = actions.find(button);
     if(iter == actions.end())
     {
         return false;
@@ -62,7 +63,7 @@ bool InputContext::getMappedAction(RawButton button, Action& action) const
 
 bool InputContext::getMappedState(RawButton button, State& state) const
 {
-    map<RawButton, State>::const_iterator iter = states.find(button);
+    std::map<RawButton, State>::const_iterator iter = states.find(button);
     if(iter == states.end())
     {
         return false;
@@ -74,7 +75,7 @@ bool InputContext::getMappedState(RawButton button, State& state) const
 
 bool InputContext::getMappedRange(RawAxis axis, Range& range) const
 {
-    map<RawAxis, Range>::const_iterator iter = ranges.find(axis);
+    std::map<RawAxis, Range>::const_iterator iter = ranges.find(axis);
     if(iter == ranges.end())
     {
         return false;

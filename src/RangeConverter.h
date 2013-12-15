@@ -2,6 +2,7 @@
 #define RANGE_CONVERTER_H
 
 #include <map>
+#include <string>
 #include "InputConstants.h"
 
 class RangeConverter
@@ -35,7 +36,7 @@ private:
     typedef std::map<Input::Range, Converter> ConversionMapT;
 
 public:
-    explicit RangeConverter();
+    explicit RangeConverter(std::string const &s);
 
     template <typename RangeType>
     RangeType convert(Input::Range rangeID, RangeType invalue) const

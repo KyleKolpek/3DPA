@@ -36,7 +36,7 @@ namespace Luatable
     }
 
     double
-    Key::asNumber() const
+    Key::asDouble() const
     {
         return numKey;
     }

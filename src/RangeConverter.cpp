@@ -1,17 +1,29 @@
+#include <iostream>
+#include <string>
 #include "RangeConverter.h"
+#include "Luatable/Value.h"
 
 using namespace Input;
 
-RangeConverter::RangeConverter()
+RangeConverter::RangeConverter(std::string const &s)
 {
+    Luatable::Value converterTable;
+    if(!converterTable.loadFromFile("../assets/input/rangeConverters/" + s))
+    {
+        std::cerr << "Error opening input converter file \""
+                  << s << "\"" << std::endl;
+    }
+
+    std::map<Luatable::Key, Luatable::Value>::iterator i;
+    for(i = converterTable.begin(); i != converterTable.end(); i++)
+    {
+        Converter converter;
+        converter.minInput  = i->second["minInput"].asDouble();
+        converter.maxInput  = i->second["maxInput"].asDouble();
+        converter.minOutput = i->second["minOutput"].asDouble();
+        converter.maxOutput = i->second["maxOutput"].asDouble();
+        converters.insert(std::make_pair(static_cast<Range>(i->first.asInt()),
+                                         converter));
+    }
     // TODO: Add range conversions here
-    Converter converter;
-
-    converter.minInput = -512.0;
-    converter.maxInput = 512.0;
-    converter.minOutput = -180;
-    converter.maxOutput = 180;
-
-    converters.insert(std::make_pair(RANGE_ROTATE_CAMERA_X, converter));
-    converters.insert(std::make_pair(RANGE_ROTATE_CAMERA_Y, converter));
 }

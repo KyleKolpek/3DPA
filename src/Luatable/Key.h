@@ -19,7 +19,7 @@ namespace Luatable
         Key(const std::string& s);
         Key(const char* s);
 
-        double asNumber() const;
+        double asDouble() const;
         int asInt() const;
         bool asBool() const;
         std::string asString() const;
