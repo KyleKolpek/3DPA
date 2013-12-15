@@ -10,26 +10,36 @@ InputContext::InputContext():conversions(NULL)
     // Set up mappings here.
     // TODO: change this to take input from a file
     Luatable::Value mainContext;
-    if(mainContext.loadFromFile("../assets/input/contexts/MainContext.lua"))
-            std::cout << "Success " << mainContext["states"][RAW_BUTTON_W].asInt() << std::endl;
-
-    /*
-    states[RAW_BUTTON_W] = STATE_CAMERA_MOVE_FORWARD;
-    states[RAW_BUTTON_S] = STATE_CAMERA_MOVE_BACK;
-    states[RAW_BUTTON_A] = STATE_CAMERA_MOVE_LEFT;
-    states[RAW_BUTTON_D] = STATE_CAMERA_MOVE_RIGHT;
-    states[RAW_BUTTON_SPACE] = STATE_CAMERA_MOVE_UP;
-    states[RAW_BUTTON_C] = STATE_CAMERA_MOVE_DOWN;
-
-    states[RAW_BUTTON_RIGHT_MOUSE] = STATE_CAMERA_ROTATE;
-
-    actions[RAW_BUTTON_LEFT_MOUSE] = ACTION_ADD_CUBE;
-
-    ranges[RAW_AXIS_MOUSE_X] = RANGE_ROTATE_CAMERA_X;
-    ranges[RAW_AXIS_MOUSE_Y] = RANGE_ROTATE_CAMERA_Y;
-
+    if(!mainContext.loadFromFile("../assets/input/contexts/MainContext.lua"))
+    {
+        std::cerr << "Error opening input context files." << std::endl;
+    }
+    std::map<Luatable::Key, Luatable::Value>::iterator i;
+    cout << hex;
+    for(i = mainContext["states"].begin();
+        i != mainContext["states"].end();
+        i++)
+    {
+        states[static_cast<RawButton>(i->first.asInt())] =
+            static_cast<State>(i->second.asInt());
+    }
+    for(i = mainContext["actions"].begin();
+        i != mainContext["actions"].end();
+        i++)
+    {
+        actions[static_cast<RawButton>(i->first.asInt())] =
+            static_cast<Action>(i->second.asInt());
+    }
+    for(i = mainContext["ranges"].begin();
+        i != mainContext["ranges"].end();
+        i++)
+    {
+        ranges[static_cast<RawAxis>(i->first.asInt())] =
+            static_cast<Range>(i->second.asInt());
+    }
+    
     sensitivities[RANGE_ROTATE_CAMERA_X] = 1.5;
-    sensitivities[RANGE_ROTATE_CAMERA_Y] = 1.5;*/
+    sensitivities[RANGE_ROTATE_CAMERA_Y] = 1.5;
     conversions = new RangeConverter();
 }
 

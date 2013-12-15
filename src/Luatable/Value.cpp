@@ -3,10 +3,8 @@
 
 #include <fstream>
 #include <sstream>
-#include <cstdio>
 #include "lua/lua.hpp"
 
-static void stackDump (lua_State *L);
 namespace
 {
     static std::string
@@ -106,7 +104,7 @@ namespace Luatable
     {
         for (auto& it : list)
         {
-            push(it);
+            (*this)[static_cast<double>(size())] = it;
         }
     }
 
@@ -188,7 +186,6 @@ namespace Luatable
         // Don't use the global table as it prevents us from using other
         // libraries
         //lua_pushglobaltable(L);
-        stackDump(L);
         fillTable(L, -1, *this);
 
         return true;
@@ -212,15 +209,15 @@ namespace Luatable
     {
         switch (type)
         {
-            case Value::Number:
+            case Number:
             {
                 return static_cast<bool>(n);
             }
-            case Value::String:
+            case String:
             {
                 return (s == "true");
             }
-            case Value::Boolean:
+            case Boolean:
             {
                 return b;
             }
@@ -239,16 +236,16 @@ namespace Luatable
     {
         switch (type)
         {
-            case Value::Number:
+            case Number:
             {
                 return static_cast<int>(n);
             }
-            case Value::String:
+            case String:
             {
                 int result;
                 return (std::stringstream(s) >> result) ? result : 0;
             }
-            case Value::Boolean:
+            case Boolean:
             {
                 return b ? 1 : 0;
             }
@@ -267,16 +264,16 @@ namespace Luatable
     {
         switch (type)
         {
-            case Value::Number:
+            case Number:
             {
                 return n;
             }
-            case Value::String:
+            case String:
             {
                 double result;
                 return (std::stringstream(s) >> result) ? result : 0;
             }
-            case Value::Boolean:
+            case Boolean:
             {
                 return b ? 1 : 0;
             }
@@ -295,17 +292,17 @@ namespace Luatable
     {
         switch (type)
         {
-            case Value::Number:
+            case Number:
             {
                 std::stringstream ss;
                 ss << n;
                 return ss.str();
             }
-            case Value::String:
+            case String:
             {
                 return s;
             }
-            case Value::Boolean:
+            case Boolean:
             {
                 return b ? "true" : "false";
             }
@@ -330,7 +327,7 @@ namespace Luatable
     {
         std::stringstream stream;
 
-        if (value.size() > 0 || value.type == Array)
+        if (value.size() > 0)
         {
             //    Stream a table begin
             if (indent > 0)
@@ -338,51 +335,29 @@ namespace Luatable
                 stream << "{\n";
             }
 
-            if (value.type == Array)
+            unsigned count = 0;
+            for (auto& pair : value)
             {
-                for (unsigned i = 0; i < value.size(); ++i)
+                ///    pair.first is the key, which is a string
+                ///    pair.second is the value, which may be a table
+
+                //    Set the initial indent
+                stream << indented(indent);
+
+                //    Stream the key
+                stream << pair.first << " = ";
+
+                //    Process any children this table has
+                stream << iterateFormatted(pair.second, indent + 1);
+
+                //    Commas are required between elements, but not after the last one
+                if (indent > 0 && count < value.size() - 1)
                 {
-                    //    Set the initial indent
-                    stream << indented(indent);
-
-                    //    Process any children this table has
-                    stream << iterateFormatted(value.at(i), indent + 1);
-
-                    //    Commas are required between elements, but not after the last one
-                    if (indent > 0 && i < value.size() - 1)
-                    {
-                        stream << ", ";
-                    }
-
-                    stream << "\n";
+                    stream << ", ";
                 }
-            }
-            else
-            {
-                unsigned count = 0;
-                for (auto& pair : value)
-                {
-                    ///    pair.first is the key, which is a string
-                    ///    pair.second is the value, which may be a table
 
-                    //    Set the initial indent
-                    stream << indented(indent);
-
-                    //    Stream the key
-                    stream << pair.first << " = ";
-
-                    //    Process any children this table has
-                    stream << iterateFormatted(pair.second, indent + 1);
-
-                    //    Commas are required between elements, but not after the last one
-                    if (indent > 0 && count < value.size() - 1)
-                    {
-                        stream << ", ";
-                    }
-
-                    stream << "\n";
-                    ++count;
-                }
+                stream << "\n";
+                ++count;
             }
 
             //    Stream a table end
@@ -407,24 +382,12 @@ namespace Luatable
                     break;
                 default:
                     break;
-                    //    wrong
+                    // wrong
+                    // also could be an empty table
             }
         }
 
         return stream.str();
-    }
-
-    void
-    Value::push(const Value& value)
-    {
-        if (type != Type::Array)
-        {
-            clear();
-            type = Type::Array;
-        }
-
-        (*this)[size()] = value;
-
     }
 
     void
@@ -439,103 +402,53 @@ namespace Luatable
 
         while (lua_next(L, -2))
         {
-            std::string key = "";
+            // TODO: change to unique_ptr
+            Key *key;
 
             lua_pushvalue(L, -2);
 
-            key = lua_tostring(L, -1);
-            printf("%s\n",key.c_str());
-
-            if (lua_istable(L, -2))
+            if (lua_isboolean(L, -1))
             {
-                //    If the indeces are numbers, it's a plain array, not an associative one
-                if (lua_isnumber(L, -1))
-                {
-                    Value next;
-
-                    fillTable(L, -2, next);
-
-                    value.push(next);
-                }
-                else
-                {
-                    fillTable(L, -2, value[key]);
-                }
+                key = new Key(static_cast<bool>(lua_toboolean(L, -1)));
+            }
+            else if (lua_isnumber(L, -1))
+            {
+                key = new Key(lua_tonumber(L, -1));
             }
             else
             {
-                key = lua_tostring(L, -1);
+                key = new Key(lua_tostring(L, -1));
+            }
 
+            // -1 contains the key
+            // -2 contains the value
+            if (lua_istable(L, -2))
+            {
+                // If the indeces are numbers, it's a plain array, not an associative one
+                fillTable(L, -2, value[*key]);
+            }
+            else
+            {
                 if (lua_isboolean(L, -2))
                 {
-                    //    Read in a boolean value
-                    if (lua_isnumber(L, -1))
-                    {
-                        value.push(static_cast<bool>(lua_toboolean(L, -2)));
-                    }
-                    else
-                    {
-                        value[key] = static_cast<bool>(lua_toboolean(L, -2));
-                    }
+                    // Read in a boolean value
+                    value[*key] = static_cast<bool>(lua_toboolean(L, -2));
                 }
                 else if (lua_isnumber(L, -2))
                 {
-                    //    Read in a number value
-                    if (lua_isnumber(L, -1))
-                    {
-                        value.push(lua_tonumber(L, -2));
-                    }
-                    else
-                    {
-                        value[key] = lua_tonumber(L, -2);
-                    }
+                    // Read in a number value
+                    value[*key] = lua_tonumber(L, -2);
                 }
                 else if (lua_isstring(L, -2))
                 {
-                    //    Read in a string value
-                    if (lua_isnumber(L, -1))
-                    {
-                        value.push(lua_tostring(L, -2));
-                    }
-                    else
-                    {
-                        value[key] = lua_tostring(L, -2);
-                    }
+                    // Read in a string value
+                    value[*key] = lua_tostring(L, -2);
                 }
             }
 
             lua_pop(L, 2);
+            delete key;
         }
         lua_pop(L, 1);
     }
 }    //    Luatable
-
-    static void stackDump (lua_State *L) {
-      int i;
-      int top = lua_gettop(L);
-      for (i = 1; i <= top; i++) {  /* repeat for each level */
-        int t = lua_type(L, i);
-        switch (t) {
-    
-          case LUA_TSTRING:  /* strings */
-            printf("`%s'", lua_tostring(L, i));
-            break;
-    
-          case LUA_TBOOLEAN:  /* booleans */
-            printf(lua_toboolean(L, i) ? "true" : "false");
-            break;
-    
-          case LUA_TNUMBER:  /* numbers */
-            printf("%g", lua_tonumber(L, i));
-            break;
-    
-          default:  /* other values */
-            printf("%s", lua_typename(L, t));
-            break;
-    
-        }
-        printf("  ");  /* put a separator */
-      }
-      printf("\n");  /* end the listing */
-    }
-

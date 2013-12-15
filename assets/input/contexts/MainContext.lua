@@ -1,5 +1,5 @@
-dofile("/home/kyle/Programs/3DPA/assets/input/contexts/RawInputConstants.lua")
-dofile("/home/kyle/Programs/3DPA/assets/input/contexts/InputConstants.lua")
+dofile("../assets/input/contexts/RawInputConstants.lua")
+dofile("../assets/input/contexts/InputConstants.lua")
 
 local context = {
     states = {

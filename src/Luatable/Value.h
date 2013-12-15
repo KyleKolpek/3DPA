@@ -68,14 +68,6 @@ class Value : public std::map<Key, Value>
         void
         saveToFile(const std::string& filename) const;
 
-        enum Type
-        {
-            None,
-            Boolean,
-            Number,
-            String,
-            Array
-        };
     private:
         Type
         type;
