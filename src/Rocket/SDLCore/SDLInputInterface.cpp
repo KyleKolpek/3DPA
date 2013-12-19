@@ -1,4 +1,3 @@
-#include <iostream>
 #include "SDLInputInterface.h"
 
 using namespace Rocket::Core::Input;
@@ -181,8 +180,6 @@ void SDLInputInterface::handleRocketInput(SDL_Event event)
                 case SDL_BUTTON_RIGHT:    button = 1;    break;
                 case SDL_BUTTON_MIDDLE:   button = 2;    break;
             }
-            std::cout << "(" << event.motion.x << "," << event.motion.y << ")"
-                      << std::endl;
             context->ProcessMouseButtonDown(button, modifiers);
             break;
         }

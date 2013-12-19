@@ -14,7 +14,7 @@
 </head>
 <body class="window">
     <div id="title-bar">
-        <handle move target="#document">
+        <handle move_target="#document">
             <span id="title">Dummy Title</span>
         </handle>
     </div>
