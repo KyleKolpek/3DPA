@@ -34,6 +34,12 @@ RawButton =
     LEFT_MOUSE      = 0x10000032,
     RIGHT_MOUSE     = 0x10000033,
     MIDDLE_MOUSE    = 0x10000034,
+    LSHIFT          = 0x10000035,
+    RSHIFT          = 0x10000036,
+    LALT            = 0x10000037,
+    RALT            = 0x10000038,
+    LCTRL           = 0x10000039,
+    RCTRL           = 0x10000040,
 }
 RawAxis = 
 {

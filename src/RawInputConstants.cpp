@@ -31,6 +31,18 @@ RawButton Input::convertToRawButton(SDL_Event e)
                     return RAW_BUTTON_W;
                 case SDLK_SPACE:
                     return RAW_BUTTON_SPACE;
+                case SDLK_LSHIFT:
+                    return RAW_BUTTON_LSHIFT;
+                case SDLK_RSHIFT:
+                    return RAW_BUTTON_RSHIFT;
+                case SDLK_LALT:
+                    return RAW_BUTTON_LALT;
+                case SDLK_RALT:
+                    return RAW_BUTTON_RALT;
+                case SDLK_LCTRL:
+                    return RAW_BUTTON_LCTRL;
+                case SDLK_RCTRL:
+                    return RAW_BUTTON_RCTRL;
             }
             break;
         case SDL_MOUSEBUTTONDOWN:

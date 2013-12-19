@@ -25,5 +25,4 @@ RangeConverter::RangeConverter(std::string const &s)
         converters.insert(std::make_pair(static_cast<Range>(i->first.asInt()),
                                          converter));
     }
-    // TODO: Add range conversions here
 }

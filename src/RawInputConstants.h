@@ -42,6 +42,12 @@ enum RawButton
     RAW_BUTTON_LEFT_MOUSE      = 0x10000032,
     RAW_BUTTON_RIGHT_MOUSE     = 0x10000033,
     RAW_BUTTON_MIDDLE_MOUSE    = 0x10000034,
+    RAW_BUTTON_LSHIFT          = 0x10000035,
+    RAW_BUTTON_RSHIFT          = 0x10000036,
+    RAW_BUTTON_LALT            = 0x10000037,
+    RAW_BUTTON_RALT            = 0x10000038,
+    RAW_BUTTON_LCTRL           = 0x10000039,
+    RAW_BUTTON_RCTRL           = 0x10000040,
 }; 
 enum RawAxis
 {

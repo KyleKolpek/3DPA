@@ -13,10 +13,13 @@
 	</style>
 </head>
 <body class="window">
-        <div id="title-bar">
+    <div id="title-bar">
         <handle move target="#document">
             <span id="title">Dummy Title</span>
         </handle>
+    </div>
+    <div id="content">
+    Why do we do this, rather than put the content directly into the 'body' element? When we come to convert this document into a reusable document template, we'll need an empty element that all of a document's content is put into. 
     </div>
 </body>
 </rml>

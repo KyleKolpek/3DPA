@@ -11,7 +11,10 @@ State =
     CAMERA_MOVE_BACK      = 0x20000004,
     CAMERA_MOVE_LEFT      = 0x20000005,
     CAMERA_MOVE_RIGHT     = 0x20000006,
-    CAMERA_ROTATE         = 0x20000007
+    CAMERA_ROTATE         = 0x20000007,
+    SHIFT_DOWN            = 0x20000008,
+    ALT_DOWN              = 0x20000009,
+    CTRL_DOWN             = 0x20000010,
 };
 
 Range = 

@@ -132,15 +132,17 @@ void CubeGenerator::addCube()
     c.green = float(rand())/float(RAND_MAX);
     c.blue  = float(rand())/float(RAND_MAX);
 
-    if(!cubeManager->insert(c))
-    {
-        cubeManager->erase(c.x, c.y, c.z);
-    }
+    cubeManager->insert(c);
 }
 
 void CubeGenerator::removeCube()
 {
-    
+    Cube c;
+    c.x = glm::floor(position.x);
+    c.y = glm::floor(position.y);
+    c.z = glm::ceil(position.z);
+
+    cubeManager->erase(c.x, c.y, c.z);
 }
 
 glm::vec3 CubeGenerator::getPosition()
@@ -152,6 +154,13 @@ void CubeGenerator::handleInput(InputMap &input)
 {
     if(input.actions.find(Input::ACTION_ADD_CUBE) != input.actions.end())
     {
-        addCube();
+        if(input.states.find(Input::STATE_SHIFT_DOWN) != input.states.end())
+        {
+            removeCube();
+        }
+        else
+        {
+            addCube();
+        }
     }
 }

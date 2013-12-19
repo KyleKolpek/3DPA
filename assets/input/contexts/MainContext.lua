@@ -10,6 +10,12 @@ local context = {
         [RawButton.SPACE] = State.CAMERA_MOVE_UP,
         [RawButton.C]     = State.CAMERA_MOVE_DOWN,
         [RawButton.RIGHT_MOUSE] = State.CAMERA_ROTATE,
+        [RawButton.LSHIFT] = State.SHIFT_DOWN,
+        [RawButton.RSHIFT] = State.SHIFT_DOWN,
+        [RawButton.LALT] = State.ALT_DOWN,
+        [RawButton.RALT] = State.ALT_DOWN,
+        [RawButton.LCTRL] = State.CTRL_DOWN,
+        [RawButton.RCTRL] = State.CTRL_DOWN,
     },
     actions = {
         [RawButton.LEFT_MOUSE] = Action.ADD_CUBE,

@@ -7,6 +7,7 @@
 #include <Rocket/Core.h>
 #include "Rocket/SDLCore/SDLRenderInterface.h"
 #include "Rocket/SDLCore/SDLSystemInterface.h"
+#include "Rocket/SDLCore/SDLInputInterface.h"
 #include "Config.h"
 #include "CubeManager.h"
 #include "CubeGenerator.h"
@@ -185,6 +186,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    SDLInputInterface rocketInput(rocketContext);
+
     Rocket::Core::FontDatabase::LoadFontFace(
         Rocket::Core::String("../assets/fonts/Delicious-Roman.otf"));
     Rocket::Core::FontDatabase::LoadFontFace(
@@ -285,6 +288,8 @@ int main(int argc, char *argv[])
                     quit = true;
                     break;
             }
+            // Pass events to rocket
+            rocketInput.handleRocketInput(event);
         }
         
         // Process events based on inputs

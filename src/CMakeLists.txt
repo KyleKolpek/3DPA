@@ -53,6 +53,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeManager)
 add_subdirectory(SOIL2)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL2)
 
+# Compile Rocket
 add_subdirectory(Rocket)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore SDLCore)
 
