@@ -18,6 +18,8 @@ body.window
 	background-bottom-image: images/invader.tga stretch 11px 140px 12px 151px;
 	background-left-image: images/invader.tga stretch 0px 139px 10px 140px;
 	background-center-image: images/invader.tga stretch 11px 139px 12px 140px;
+
+    padding: 10px 15px;
 }
 
 div
@@ -45,6 +47,38 @@ div#title-bar span
 
     padding-left: 85px;
     padding-right: 25px;
-    padding-top: 17px;
-    padding-bottom: 48px;
+    padding-top: 13px;
+    padding-bottom: 42px;
+}
+
+div#content
+{
+    height: 100%;
+    overflow: auto;
+
+    z-index: 1;
+}
+
+div#content scrollbarvertical
+{
+    width:27px;
+}
+
+div#content scrollbarvertical slidertrack
+{
+    background-decorator: tiled-vertical;
+
+    background-top-image: images/invader.tga 74px 199px 101px 201px;
+    background-center-image: images/invader.tga stretch 74px 201px 101px 202px;
+    background-bottom-image: images/invader.tga 74px 203px 101px 204px;
+}
+div#content scrollbarvertical sliderbar
+{
+    width:23px;
+
+    background-decorator: tiled-vertical;
+
+    background-top-image: images/invader.tga 56px 152px 79px 175px;
+    background-center-image: images/invader.tga stretch 56px 175px 79px 175px;
+    background-bottom-image: images/invader.tga 56px 176px 79px 198px;
 }

@@ -8,6 +8,7 @@ namespace Input
 
 enum RawButton
 {
+    RAW_BUTTON_UNKNOWN         = 0x10000000,
     RAW_BUTTON_UP              = 0x10000001,
     RAW_BUTTON_DOWN            = 0x10000002,
     RAW_BUTTON_LEFT            = 0x10000003,

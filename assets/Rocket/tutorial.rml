@@ -20,6 +20,10 @@
     </div>
     <div id="content">
     Why do we do this, rather than put the content directly into the 'body' element? When we come to convert this document into a reusable document template, we'll need an empty element that all of a document's content is put into. 
+
+     Well that doesn't look right! So what's happened here? When an element needs to generate a vertical scrollbar, it creates a block-level child element with a tag of 'scrollbarvertical' and anchors it to the right edge of the element. As it is block-level, its width defaults to 'auto' so it occupies the entire content area of its parent, the content element. So there's no space for the text! Not only that, but we haven't attached a decorator to the scrollbar elements so we can't actually see it yet.
+
+     Elements that Rocket dynamically creates, like the scrollbar, can be styled through RCSS like normal elements. All we need to do is create a rule that will match the element 'scrollbarvertical'. First thing to do? Set its width so it doesn't occupy the whole element. The scrollbar graphics we've designed for Rocket Invaders from Mars are designed to be 27 pixels wide. This RCSS rule will resize the scrollbar: 
     </div>
 </body>
 </rml>

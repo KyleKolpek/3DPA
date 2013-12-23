@@ -1,5 +1,6 @@
 RawButton = 
 {
+    UNKNOWN         = 0x10000000,
     UP              = 0x10000001,
     DOWN            = 0x10000002,
     LEFT            = 0x10000003,
