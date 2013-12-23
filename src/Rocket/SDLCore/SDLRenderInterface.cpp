@@ -33,6 +33,20 @@
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
+namespace
+{
+
+struct CompiledGeometryAggregate
+{
+    GLuint vertexBuffer;
+    GLuint indexBuffer;
+    GLuint texture;
+    int vertexCount;
+    int indexCount;
+};
+
+}
+
 SDLRenderInterface::SDLRenderInterface()
 {
 }
@@ -52,10 +66,48 @@ void SDLRenderInterface::SetShaderManager(ShaderManager *sm)
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.
 void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
-        
-    GLuint program;
+    Rocket::Core::CompiledGeometryHandle cgh = CompileGeometry(vertices, num_vertices, indices, num_indices, texture);
+    RenderCompiledGeometry(cgh, translation);
+    ReleaseCompiledGeometry(cgh);
+}
+
+// Called by Rocket when it wants to compile geometry it believes will be static for the forseeable future.		
+Rocket::Core::CompiledGeometryHandle SDLRenderInterface::CompileGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture)
+{
+
+    CompiledGeometryAggregate *cga = new CompiledGeometryAggregate();
     GLuint vertexBuffer;
     GLuint indexBuffer;
+
+    // Populate vertex buffer
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Rocket::Core::Vertex) * num_vertices,
+                 vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Populate index buffer
+    glGenBuffers(1, &indexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices,
+                 indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
+    cga->vertexBuffer = vertexBuffer;
+    cga->indexBuffer  = indexBuffer;
+    cga->vertexCount  = num_vertices;
+    cga->indexCount   = num_indices;
+    cga->texture      = (GLuint) texture;
+
+	return (Rocket::Core::CompiledGeometryHandle) cga;
+}
+
+// Called by Rocket when it wants to render application-compiled geometry.		
+void SDLRenderInterface::RenderCompiledGeometry(Rocket::Core::CompiledGeometryHandle geometry, const Rocket::Core::Vector2f& translation)
+{
+    CompiledGeometryAggregate *cga =
+        reinterpret_cast<CompiledGeometryAggregate*>(geometry);
+    GLuint program;
     GLuint vertexPosLoc      = 0;
     GLuint vertexColorLoc    = 0;
     GLuint vertexTexCoordLoc = 0;
@@ -63,20 +115,10 @@ void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     GLuint translationLoc    = 0;
     GLuint viewDimLoc        = 0;
 
-    // Populate vertex buffer
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Rocket::Core::Vertex) * num_vertices,
-                 vertices, GL_STATIC_DRAW);
-
-    // Populate index buffer
-    glGenBuffers(1, &indexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices,
-                 indices, GL_STATIC_DRAW);
-
+    glBindBuffer(GL_ARRAY_BUFFER, cga->vertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cga->indexBuffer);
     // Handle textures
-	if (!texture)
+	if (!cga->texture)
 	{
         program = shaderManager->getProgram(2, "rocketNoTex.vert",
                                                "rocketNoTex.frag");
@@ -93,7 +135,7 @@ void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
         if(texSamplerLoc != -1)
         {
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, (GLuint) texture);
+            glBindTexture(GL_TEXTURE_2D, (GLuint) cga->texture);
             glUniform1i(texSamplerLoc, 0);
         }
         if(vertexTexCoordLoc != -1)
@@ -139,33 +181,25 @@ void SDLRenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_
     }
 
     // Draw the geometry
-	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, cga->indexCount, GL_UNSIGNED_INT, 0);
 
     glDisableVertexAttribArray(vertexPosLoc);
     glDisableVertexAttribArray(vertexColorLoc);
     glDisableVertexAttribArray(vertexTexCoordLoc);
-    glDeleteBuffers(1, &vertexBuffer);
-    glDeleteBuffers(1, &indexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glUseProgram(0);
-
-}
-
-// Called by Rocket when it wants to compile geometry it believes will be static for the forseeable future.		
-Rocket::Core::CompiledGeometryHandle SDLRenderInterface::CompileGeometry(Rocket::Core::Vertex* ROCKET_UNUSED(vertices), int ROCKET_UNUSED(num_vertices), int* ROCKET_UNUSED(indices), int ROCKET_UNUSED(num_indices), const Rocket::Core::TextureHandle ROCKET_UNUSED(texture))
-{
-	return (Rocket::Core::CompiledGeometryHandle) NULL;
-}
-
-// Called by Rocket when it wants to render application-compiled geometry.		
-void SDLRenderInterface::RenderCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry), const Rocket::Core::Vector2f& ROCKET_UNUSED(translation))
-{
 }
 
 // Called by Rocket when it wants to release application-compiled geometry.		
-void SDLRenderInterface::ReleaseCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry))
+void SDLRenderInterface::ReleaseCompiledGeometry(Rocket::Core::CompiledGeometryHandle geometry)
 {
+    CompiledGeometryAggregate *cga =
+        reinterpret_cast<CompiledGeometryAggregate*>(geometry);
+    glDeleteBuffers(1, &cga->vertexBuffer);
+    glDeleteBuffers(1, &cga->indexBuffer);
+    // Do we need to delete the texture here?
+    delete cga;
 }
 
 // Called by Rocket when it wants to enable or disable scissoring to clip content.		
@@ -196,8 +230,13 @@ bool SDLRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle
         SOIL_FLAG_NTSC_SAFE_RGB |
         SOIL_FLAG_COMPRESS_TO_DXT);
 
-    texture_dimensions.x = 512;
-    texture_dimensions.y = 512;
+    // We have to query OpenGL to get texture dimensions since SOIL doesn't
+    // provide an interface to get that data. Adding that funcitonality is
+    // nontrivial.
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
+                             &texture_dimensions.x);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT,
+                             &texture_dimensions.y);
 
     return (bool) texture_handle;
 }
