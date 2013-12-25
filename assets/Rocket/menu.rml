@@ -1,0 +1,13 @@
+<rml>
+<head>
+	<link type="text/css" href="menu.rcss"/>
+	<title>Window</title>
+</head>
+<body class="window">
+    <div id="sliders">
+        <input type="range" id="red" min="0" max="100" step="1"/>
+        <input type="range" id="green" min="0" max="100" step="1"/>
+        <input type="range" id="blue" min="0" max="100" step="1"/>
+    </div>
+</body>
+</rml>

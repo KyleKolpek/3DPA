@@ -1,0 +1,76 @@
+body
+{
+    width: 256px;
+    height: 63px;
+
+	font-family: Delicious;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 15;
+	color: white;
+    background-color:#aaa;
+    display: block;
+}
+
+body.window
+{
+    position:absolute;
+    padding:4px;
+    top:32px;
+}
+
+div
+{
+    display: block;
+}
+
+div#sliders 
+{
+}
+div#sliders input.range
+{
+    width:  256px;
+    height: 21px;
+}
+
+input.range sliderarrowdec,
+input.range sliderarrowinc,
+{
+    width:  0px;
+    height: 0px;
+}
+
+div#sliders input.range sliderbar,
+{
+    width:8px;
+
+    background-decorator: tiled-vertical;
+
+    background-top-image: images/MenuSprites.png 261px 13px 269px 17px;
+    background-center-image: images/MenuSprites.png stretch 261px 17px 269px 30px;
+    background-bottom-image: images/MenuSprites.png 261px 30px 269px 34px;
+}
+
+div#sliders input#red slidertrack
+{
+    background-decorator: image;
+    margin:3px 0px 2px 0px;
+    height:16px;
+    background-image: images/MenuSprites.png 0px 0px 256px 15px;
+}
+
+div#sliders input#green slidertrack
+{
+    background-decorator: image;
+    margin:3px 0px 2px 0px;
+    height:16px;
+    background-image: images/MenuSprites.png 0px 16px 256px 31px;
+}
+
+div#sliders input#blue slidertrack
+{
+    background-decorator: image;
+    margin:3px 0px 2px 0px;
+    height:16px;
+    background-image: images/MenuSprites.png 0px 32px 256px 47px;
+}

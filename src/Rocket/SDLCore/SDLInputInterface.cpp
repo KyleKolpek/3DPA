@@ -1,4 +1,4 @@
-#include "SDLInputInterface.h"
+#include <Rocket/SDLCore/SDLInputInterface.h>
 
 using namespace Rocket::Core::Input;
 
@@ -196,7 +196,7 @@ void SDLInputInterface::handleRocketInput(SDL_Event event)
             break;
         }
         case SDL_MOUSEWHEEL:
-            context->ProcessMouseWheel(event.wheel.y, modifiers);
+            context->ProcessMouseWheel(-event.wheel.y, modifiers);
             break;
         case SDL_MOUSEMOTION:
             context->ProcessMouseMove(event.motion.x,

@@ -25,7 +25,7 @@
  *
  */
 
-#include "SDLRenderInterface.h"
+#include <Rocket/SDLCore/SDLRenderInterface.h>
 #include <Rocket/Core.h>
 #include "SOIL2/SOIL2.h"
 #include "../../ShaderManager.h"

@@ -5,9 +5,9 @@
 #include <stdgl.h>
 #include <SDL.h>
 #include <Rocket/Core.h>
-#include "Rocket/SDLCore/SDLRenderInterface.h"
-#include "Rocket/SDLCore/SDLSystemInterface.h"
-#include "Rocket/SDLCore/SDLInputInterface.h"
+#include <Rocket/SDLCore.h>
+#include <Rocket/Controls.h>
+#include <Rocket/Debugger.h>
 #include "Config.h"
 #include "CubeManager.h"
 #include "CubeGenerator.h"
@@ -188,6 +188,13 @@ int main(int argc, char *argv[])
 
     SDLInputInterface rocketInput(rocketContext);
 
+    // Set up the debugger
+    //Rocket::Debugger::Initialise(rocketContext);
+    //Rocket::Debugger::SetVisible(true);
+
+    // Set up the controls
+    Rocket::Controls::Initialise();
+
     Rocket::Core::FontDatabase::LoadFontFace(
         Rocket::Core::String("../assets/fonts/Delicious-Roman.otf"));
     Rocket::Core::FontDatabase::LoadFontFace(
@@ -198,7 +205,7 @@ int main(int argc, char *argv[])
         Rocket::Core::String("../assets/fonts/Delicious-BoldItalic.otf"));
 
     Rocket::Core::ElementDocument *document =
-        rocketContext->LoadDocument("../assets/Rocket/tutorial.rml");
+        rocketContext->LoadDocument("../assets/Rocket/menu.rml");
     if(document != NULL)
     {
         document->Show();

@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include "SDLSystemInterface.h"
+#include <Rocket/SDLCore/SDLSystemInterface.h>
 
 float SDLSystemInterface::GetElapsedTime()
 {

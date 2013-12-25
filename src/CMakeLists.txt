@@ -55,7 +55,11 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL2)
 
 # Compile Rocket
 add_subdirectory(Rocket)
-set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore SDLCore)
+set(INTERNAL_LIBS ${INTERNAL_LIBS}
+    RocketCore
+    RocketDebugger
+    RocketControls
+    SDLCore)
 
 add_subdirectory(Luatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Luatable)
