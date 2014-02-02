@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Model::Model(ModelData *modelData):
+Model::Model():
     position(0.0),
     scaleFactor(1.0),
     rotation(0.0),
@@ -15,14 +15,8 @@ Model::Model(ModelData *modelData):
     vertexCount(0),
     vertexBuffer(NULL),
     texture(NULL),
-    modelMatrix(1.0),
-    modelData(modelData)
+    modelMatrix(1.0)
 {
-}
-
-Model::~Model()
-{
-    delete modelData;
 }
 
 void Model::draw()
@@ -176,7 +170,7 @@ void Model::scale(float factor)
 
 void Model::rotate(float degrees)
 {
-    this->rotation += degrees;
+    this->rotation += degrees % 360;
     createModelMatrix();
 }
 

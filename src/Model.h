@@ -15,8 +15,8 @@ class ModelData;
 class Model: public Drawable
 {
 public:
-    Model(ModelData *modelData);
-    virtual ~Model();
+    Model();
+    virtual ~Model() = 0;
 
     // Inherited methods
     virtual void draw();
@@ -74,17 +74,18 @@ public:
 
     /***********************************************************************//**
      * Scales the model by a fmodel.
-     * \param[in] fmodel
-     *     The fmodel to multiply the scale by.
+     * TODO: Expand to quaternion rotation or something.
+     * \param[in] degrees
+     *     The number of degrees to rotate by around the Y axis.
      **************************************************************************/
     void rotate(float degrees);
 
-protected:
     /***********************************************************************//**
-     * modelData stores OpenGL vertex pointers and attributes.
+     * The OpenGL vertex pointers and attributes.
      **************************************************************************/
-     ModelData *modelData;
+     ModelData modelData;
 
+private:
     /***********************************************************************//**
      * The world position of the model.
      **************************************************************************/
@@ -96,7 +97,8 @@ protected:
     float scaleFactor;
 
     /***********************************************************************//**
-     * The rotation of the model.
+     * The rotation of the model in degrees.
+     * TODO: Expand to quaternion rotation or something.
      **************************************************************************/    
     float rotation;
 
