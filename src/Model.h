@@ -10,16 +10,12 @@ class ModelData;
 
 /***************************************************************************//**
  * A drawable class that can undergo most affine transformations.
- * This is one of the more basic drawable classes.
  ******************************************************************************/
-class Model: public Drawable
+class Model
 {
 public:
     Model();
     virtual ~Model() = 0;
-
-    // Inherited methods
-    virtual void draw();
 
     /***********************************************************************//**
      * Retrieve the model's position in world space.
@@ -81,11 +77,47 @@ public:
     void rotate(float degrees);
 
     /***********************************************************************//**
+     * Returns the current size of the data stored in the vertex buffer in
+     * bytes.
+     **************************************************************************/
+    int getVertexDataSize();
+
+    /***********************************************************************//**
+     * Returns the current size of the vertex buffer in bytes.
+     **************************************************************************/
+    int getVertexBufferSize();
+
+    /***********************************************************************//**
      * The OpenGL vertex pointers and attributes.
      **************************************************************************/
-     ModelData modelData;
+    ModelData modelData;
+
+    /***********************************************************************//**
+     * Allows for substituting buffer data into the model's vertex buffer. This
+     * method allows for automatic growth of the vertex buffer.
+     * \param[in] offset
+     *     The offset into the buffer where the data substitution will begin.
+     * \param[in] size
+     *     The size in bytes of the data to be replaced.
+     * \param[in] data
+     *     A pointer to the dat to be substituted into the vertex buffer.
+     **************************************************************************/
+    void bufferData(GLintptr offset, GLsizeiptr size, const GLvoid * data);
 
 private:
+    /***********************************************************************//**
+     * Expands the size of the vertex buffer to newSize, maintaining all data.
+     * \param[in] newSize
+     *     The new size of the vertex buffer.
+     **************************************************************************/
+    void expandVertexBuffer(GLuint newSize);
+
+    /***********************************************************************//**
+     * Creates the model's model view matrix. This enables us to avoid repeat 
+     * calculations.
+     **************************************************************************/
+    void createModelMatrix();
+
     /***********************************************************************//**
      * The world position of the model.
      **************************************************************************/
@@ -108,11 +140,14 @@ private:
     glm::mat4 modelMatrix;
 
     /***********************************************************************//**
-     * Creates the model's model view matrix. This enables us to avoid repeat 
-     * calculations.
+     * Stores the number of bytes currently stored in the vertex buffer.
      **************************************************************************/
-    void createModelMatrix();
+    GLuint vertexDataSize;
 
+    /***********************************************************************//**
+     * Stores the size of the buffer currently allocated on the GPU.
+     **************************************************************************/
+    GLuint vertexBufferSize;
 };
 
 #endif

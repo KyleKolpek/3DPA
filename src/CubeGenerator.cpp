@@ -25,8 +25,8 @@ CubeGenerator::~CubeGenerator()
 
 GLuint CubeGenerator::loadShader()
 {
-   return shaderManager->getProgram(2, "phongCubeRGBA.vert",
-                                    "phongCubeRGBA.frag");
+   return shaderManager->getProgram(2, "phongCube.vert",
+                                    "phongCube.frag");
 }
 
 void CubeGenerator::draw(GLuint program)
@@ -128,9 +128,10 @@ void CubeGenerator::addCube()
     c.y = glm::floor(position.y);
     c.z = glm::ceil(position.z);
 
-    c.red   = float(rand())/float(RAND_MAX);
-    c.green = float(rand())/float(RAND_MAX);
-    c.blue  = float(rand())/float(RAND_MAX);
+    c.red    = float(rand())/float(RAND_MAX);
+    c.green  = float(rand())/float(RAND_MAX);
+    c.blue   = float(rand())/float(RAND_MAX);
+    c.alpha  = 1.0f;
 
     cubeManager->insert(c);
 }

@@ -12,6 +12,7 @@ public:
     float red;
     float green;
     float blue;
+    float alpha;
     int size;
 
     static float vertexData[];

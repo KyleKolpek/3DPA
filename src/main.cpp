@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
-#include <stdgl.h>
 #include <SDL.h>
 #include <Rocket/Core.h>
 #include <Rocket/SDLCore.h>
 #include <Rocket/Controls.h>
 #include <Rocket/Debugger.h>
+#include "stdgl.h"
 #include "Config.h"
 #include "CubeManager.h"
 #include "CubeGenerator.h"
@@ -135,21 +135,24 @@ int main(int argc, char *argv[])
     a.x = 0;
     a.y = 0;
     a.z = 0;
-    a.red   = 1.0;
-    a.green = 0.0;
-    a.blue  = 0.0;
+    a.red    = 1.0;
+    a.green  = 0.0;
+    a.blue   = 0.0;
+    a.alpha  = 1.0;
     b.x = 2;
     b.y = 2;
     b.z = -1;
-    b.red   = 0.0;
-    b.green = 1.0;
-    b.blue  = 0.0;
+    b.red    = 0.0;
+    b.green  = 1.0;
+    b.blue   = 0.0;
+    b.alpha  = 1.0;
     c.x = -2;
     c.y = 0;
     c.z = 1;
-    c.red   = 0.0;
-    c.green = 0.0;
-    c.blue  = 1.0;
+    c.red    = 0.0;
+    c.green  = 0.0;
+    c.blue   = 1.0;
+    c.alpha  = 1.0;
 
     cm.insert(a);
     cm.insert(b);
