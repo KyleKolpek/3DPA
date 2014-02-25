@@ -121,6 +121,8 @@ void Model::bufferData(GLintptr offset,
     glBindBuffer(GL_ARRAY_BUFFER, modelData.vertexBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    vertexDataSize = neededSize;
 }
 
 void Model::expandVertexBuffer(GLuint newSize)
@@ -134,16 +136,12 @@ void Model::expandVertexBuffer(GLuint newSize)
     vertexBufferSize = newSize;
 
     glGenBuffers(1, &newBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, newBuffer); // NOTE: Can one buffer be bound
-                                              // to multiple targets?
-                                              // Can I buffer only using
-                                              // GL_COPY_WRITE_BUFFER?
+    glBindBuffer(GL_ARRAY_BUFFER, newBuffer);
     glBindBuffer(GL_COPY_READ_BUFFER, modelData.vertexBuffer);
-    glBindBuffer(GL_COPY_WRITE_BUFFER, newBuffer);
 
     // TODO: Change GL_DYNAMIC_DRAW to a variable somewhere (ModelData?).
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, NULL, GL_DYNAMIC_DRAW);
-    glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0,
+    glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0,
                         vertexDataSize);
     glDeleteBuffers(1, &modelData.vertexBuffer);
 
@@ -151,5 +149,4 @@ void Model::expandVertexBuffer(GLuint newSize)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_COPY_READ_BUFFER, 0);
-    glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
 }
