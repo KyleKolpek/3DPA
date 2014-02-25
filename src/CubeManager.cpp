@@ -36,7 +36,7 @@ Cube& CubeManager::at(int x, int y, int z)
     return cubeMap.at(makeKey(x,y,z));
 }
 
-const map<MortonNumber, Cube>& getCubeMap()
+const map<MortonNumber, Cube>& CubeManager::getCubeMap()
 {
     return cubeMap;
 }

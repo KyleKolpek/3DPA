@@ -16,6 +16,7 @@ public:
     unsigned int size;
 
     static float vertexData[];
+    static int vertexDataSize;
     static int vertexCount;
 };                                                    
                                                       

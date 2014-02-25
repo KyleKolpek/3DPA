@@ -52,7 +52,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeManager)
 # Compile CubeModeler
 add_library(CubeModeler
             CubeModeler.cpp)
-target_link_libraries(CubeModeler Updatable Model)
+target_link_libraries(CubeModeler CubeGenerator CubeManager Updatable Model)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeModeler) 
 
 # Compile Model

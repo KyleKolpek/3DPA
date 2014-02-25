@@ -6,5 +6,4 @@ ModelData::ModelData()
 
 ModelData::~ModelData()
 {
-    delete textures;
 }

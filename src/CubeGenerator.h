@@ -2,6 +2,7 @@
 #define CUBEGENERATOR_H
 
 #include "GLM/glm.hpp"
+#include "Cube.h"
 
 class CubeManager;
 

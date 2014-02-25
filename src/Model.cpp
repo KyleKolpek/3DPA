@@ -1,5 +1,4 @@
 #include <cmath>
-#include "SOIL/SOIL.h"
 #include "Model.h"
 #include "ModelData.h"
 #include "GLM/glm.hpp"
@@ -13,10 +12,6 @@ Model::Model():
     position(0.0),
     scaleFactor(1.0),
     rotation(0.0),
-    radius(0.5),
-    vertexCount(0),
-    vertexBuffer(NULL),
-    texture(NULL),
     modelMatrix(1.0),
     vertexBufferSize(0),
     vertexDataSize(0),
@@ -33,7 +28,7 @@ glm::vec3 Model::getPosition()
     return position;
 }
 
-glm::vec4 const& getModelMatrix()
+glm::mat4 const& Model::getModelMatrix()
 {
     return modelMatrix;
 }
@@ -47,7 +42,6 @@ void Model::setPosition(glm::vec3 const &position)
 void Model::setScale(float scale)
 {
     this->scaleFactor = scale;
-    this->radius = 0.5 * scale; //TODO: fix magic numbers
     createModelMatrix();
 }
 
@@ -77,7 +71,7 @@ void Model::scale(float factor)
 
 void Model::rotate(float degrees)
 {
-    this->rotation += degrees % 360;
+    this->rotation += fmod(degrees, 360);
     createModelMatrix();
 }
 
@@ -126,7 +120,7 @@ void Model::bufferData(GLintptr offset,
     // Buffer the data.
     glBindBuffer(GL_ARRAY_BUFFER, modelData.vertexBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
-    glBindBuffer(GL_ARRAY_BUFFER, NULL);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Model::expandVertexBuffer(GLuint newSize)
@@ -155,7 +149,7 @@ void Model::expandVertexBuffer(GLuint newSize)
 
     modelData.vertexBuffer = newBuffer;
 
-    glBindBuffer(GL_ARRAY_BUFFER, NULL);
-    glBindBuffer(GL_COPY_READ_BUFFER, NULL);
-    glBindBuffer(GL_COPY_WRITE_BUFFER, NULL);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_COPY_READ_BUFFER, 0);
+    glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
 }

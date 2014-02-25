@@ -3,7 +3,9 @@
 
 #include "Updatable.h"
 #include "SelfishModel.h"
-#include "ShaderManger.h"
+#include "ShaderManager.h"
+#include "CubeManager.h"
+#include "CubeGenerator.h"
 #include "GLM/glm.hpp"
 
 class CubeModeler: public SelfishModel, public Updatable
@@ -17,6 +19,7 @@ public:
 private:
     CubeManager cubeManager;
     CubeGenerator cubeGenerator;
+    void populateModelData();
 };
 
 #endif

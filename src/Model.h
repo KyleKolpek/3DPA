@@ -4,8 +4,8 @@
 #include <string>
 #include "stdgl.h"
 #include "GLM/glm.hpp"
+#include "ModelData.h"
 
-class ModelData;
 
 /***************************************************************************//**
  * A drawable class that can undergo most affine transformations.
@@ -28,7 +28,7 @@ public:
      * \return  
      *     The model matrix.
      **************************************************************************/
-    glm::vec4 const& getModelMatrix();
+    glm::mat4 const& getModelMatrix();
 
     /***********************************************************************//**
      * Sets the model's position in world/dungeon space.

@@ -37,11 +37,12 @@ void Renderer::render()
             mit != models.end();
             mit++)
         {
-            glUseProgram((*mit)->modelData.shaderProgram);
+            GLuint program = (*mit)->modelData.shaderProgram;
+            glUseProgram(program);
 
             // Calculate MV matrix and get projection matrix
             glm::mat4 MV   = (*vit)->getCurrentCamera().getViewMatrix() * 
-                             (*mit)->modelMatrix;
+                             (*mit)->getModelMatrix();
             glm::mat4 proj = (*vit)->getCurrentCamera().getProjectionMatrix();
 
             // Set uniforms
@@ -65,16 +66,13 @@ void Renderer::render()
             glBindBuffer(GL_ARRAY_BUFFER, (*mit)->modelData.vertexBuffer);
 
             // Set up vertex attributes.
-            for(vector<VertexAttribute>::iterator vit =
-                    (*mit)->modelData.vertexAttribs.begin();
-                vit != (*mit)->modelData.vertexAttribs.end();
-                vit++)
+            for(const VertexAttribute& vait : (*mit)->modelData.vertexAttribs)
             {
-                glEnableVertexAttribArray((*vit).index);
-                glVertexAttribPointer((*vit).index,  (*vit).size,
-                                      (*vit).type,   (*vit).normalized,
-                                      (*vit).stride, (*vid).pointer);
-                glVertexAttribDivisor((*vit).index, (*vit).divisor);
+                glEnableVertexAttribArray(vait.index);
+                glVertexAttribPointer(vait.index,  vait.size,
+                                      vait.type,   vait.normalized,
+                                      vait.stride, vait.pointer);
+                glVertexAttribDivisor(vait.index, vait.divisor);
             }
             
             // Draw
@@ -83,13 +81,10 @@ void Renderer::render()
                                   (*mit)->instanceCount);
 
             // Unset attributes that may interfere elsewhere.
-            for(vector<VertexAttribute>::iterator vit =
-                    (*mit)->modelData.vertexAttribs.begin();
-                vit != (*mit)->modelData.vertexAttribs.end();
-                vit++)
+            for(const VertexAttribute& vait : (*mit)->modelData.vertexAttribs)
             {
-                glDisableVertexAttribArray((*vit).index);
-                glVertexAttribDivisor((*vit).index, 0);
+                glDisableVertexAttribArray(vait.index);
+                glVertexAttribDivisor(vait.index, 0);
             }
             // END DRAW
             glBindBuffer(GL_ARRAY_BUFFER, 0);

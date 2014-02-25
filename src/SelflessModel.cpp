@@ -1,10 +1,10 @@
 #include "SelflessModel.h"
 
 
-SelflessModel::SelfishModel():Model()
+SelflessModel::SelflessModel():Model()
 {
 }
 
-SelflessModel::~SelfishModel()
+SelflessModel::~SelflessModel()
 {
 }

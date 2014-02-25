@@ -54,6 +54,6 @@ float Cube::vertexData[] = {
                              0.0,  1.0,  0.0,
                              0.0,  1.0,  0.0,
                              0.0,  1.0,  0.0};
-
 int Cube::vertexCount = 4 * 6 + 2;
+int Cube::vertexDataSize = Cube::vertexCount * 2 * sizeof(float) * 3;
 

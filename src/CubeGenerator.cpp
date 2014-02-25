@@ -17,11 +17,6 @@ CubeGenerator::~CubeGenerator()
 {
 }
 
-void CubeGenerator::move(glm::vec3 delta)
-{
-    position += delta;
-}
-
 void CubeGenerator::moveTo(const glm::vec3 &position)
 {
     this->position = position;
@@ -55,4 +50,9 @@ void CubeGenerator::removeCube()
 glm::vec3 CubeGenerator::getPosition()
 {
     return position;
+}
+
+void CubeGenerator::setCubeManager(CubeManager *cubeManager)
+{
+    this->cubeManager = cubeManager;
 }
