@@ -3,7 +3,6 @@
 
 #include <string>
 #include "stdgl.h"
-#include "Drawable.h"
 #include "GLM/glm.hpp"
 
 class ModelData;
@@ -104,6 +103,10 @@ public:
      **************************************************************************/
     void bufferData(GLintptr offset, GLsizeiptr size, const GLvoid * data);
 
+    /***********************************************************************//**
+     * Holds the number of instances to be drawn.
+     **************************************************************************/
+    GLuint instanceCount;
 private:
     /***********************************************************************//**
      * Expands the size of the vertex buffer to newSize, maintaining all data.

@@ -24,6 +24,7 @@ void ModelBuilder::addVertexAttribute(GLuint index,
                                       GLenum type,
                                       GLboolean normalized,
                                       GLsizei stride,
+                                      GLvoid *pointer,
                                       GLuint divisor)
 {
     VertexAttribute va;
@@ -32,6 +33,7 @@ void ModelBuilder::addVertexAttribute(GLuint index,
     va.type = type;
     va.normalized = normalized;
     va.stride = stride;
+    va.pointer = pointer;
     va.divisor = divisor;
     vertexAttribs.push_back(va);
 }

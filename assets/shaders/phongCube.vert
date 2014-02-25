@@ -6,12 +6,12 @@ uniform mat4 projection;
 
 attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
-attribute vec3 vertexColor;
+attribute vec4 vertexColor;
 attribute vec3 cubePosition;
 
 varying vec3 normal;
 varying vec3 cameraSpacePos;
-varying vec3 fragColor;
+varying vec4 fragColor;
 
 void main(void)
 {

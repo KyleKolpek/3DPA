@@ -37,6 +37,8 @@ public:
      *     shader.
      * \param[in] stride
      *     The distance in bytes between the start of subsequent vertices.
+     * \param[in] pointer
+     *     The distance in bytes to the start of the data in the buffer.
      * \param[in] divisor
      *     The number of instances to be passed between updates of the
     *      attribute.
@@ -46,6 +48,7 @@ public:
                             GLenum type,
                             GLboolean normalized,
                             GLsizei stride,
+                            GLvoid *pointer,
                             GLuint divisor);
     
     /***********************************************************************//**

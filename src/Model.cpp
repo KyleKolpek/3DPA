@@ -19,7 +19,8 @@ Model::Model():
     texture(NULL),
     modelMatrix(1.0),
     vertexBufferSize(0),
-    vertexDataSize(0)
+    vertexDataSize(0),
+    instanceCount(1)
 {
 }
 

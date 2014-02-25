@@ -12,6 +12,7 @@ struct VertexAttribute
     GLenum type;
     GLboolean normalized;
     GLsizei stride;
+    GLvoid* pointer;
     GLuint divisor;
 };
 
