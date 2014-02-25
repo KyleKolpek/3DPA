@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include "CubeGenerator.h"
 #include "CubeManager.h"
+#include "Rocket/Controls.h"
 
 using namespace std;
 
@@ -27,9 +28,12 @@ void CubeGenerator::addCube()
     Cube c ={static_cast<int>(glm::floor(position.x)),
              static_cast<int>(glm::floor(position.y)),
              static_cast<int>(glm::ceil(position.z)),
+             colorGetter.getRed(),
+             colorGetter.getGreen(),
+             colorGetter.getBlue(),
+             /*float(rand())/float(RAND_MAX),
              float(rand())/float(RAND_MAX),
-             float(rand())/float(RAND_MAX),
-             float(rand())/float(RAND_MAX),
+             float(rand())/float(RAND_MAX),*/
              1.0f,
              1};
 
@@ -51,4 +55,17 @@ glm::vec3 CubeGenerator::getPosition()
 void CubeGenerator::setCubeManager(CubeManager *cubeManager)
 {
     this->cubeManager = cubeManager;
+}
+
+void CubeGenerator::attachListener(Rocket::Core::Element *element)
+{
+        static_cast<Rocket::Controls::ElementFormControlInput *>
+                    (element->GetElementById("red"))->
+                    AddEventListener("change", &colorGetter);
+        static_cast<Rocket::Controls::ElementFormControlInput *>
+                    (element->GetElementById("green"))->
+                    AddEventListener("change", &colorGetter);
+        static_cast<Rocket::Controls::ElementFormControlInput *>
+                    (element->GetElementById("blue"))->
+                    AddEventListener("change", &colorGetter);
 }

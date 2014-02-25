@@ -40,7 +40,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
 # Compile CubeGenerator
 add_library(CubeGenerator
             CubeGenerator.cpp)
-target_link_libraries(CubeGenerator Cube CubeManager)
+target_link_libraries(CubeGenerator Cube CubeManager ColorGetter)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeGenerator) 
 
 # Compile CubeManager
@@ -55,14 +55,20 @@ add_library(CubeModeler
 target_link_libraries(CubeModeler CubeGenerator CubeManager Updatable Model)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeModeler) 
 
+# Compile ColorGetter
+add_library(ColorGetter
+            ColorGetter.cpp)
+target_link_libraries(ColorGetter RocketCore)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} ColorGetter)
+
 # Compile Model
 add_library(Model
             ModelData.cpp
             Model.cpp
             SelfishModel.cpp
             SelflessModel.cpp)
-set(INTERNAL_LIBS ${INTERNAL_LIBS} Model)
 target_link_libraries(Model SOIL2)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Model)
 
 # Compile SOIL
 add_subdirectory(SOIL2)
@@ -75,6 +81,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore
                                    RocketControls
                                    SDLCore)
 
+# Compile Luatable
 add_subdirectory(Luatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Luatable)
 

@@ -12,7 +12,8 @@ struct CubePosColor
     float color[4];
 };
 
-CubeModeler::CubeModeler(ShaderManager &shaderManager):
+CubeModeler::CubeModeler(ShaderManager &shaderManager,
+                         Rocket::Core::Element *element):
     SelfishModel()
 {
     // NOTE: Uses c++11 initialization lists, possibly incorrectly
@@ -44,6 +45,7 @@ CubeModeler::CubeModeler(ShaderManager &shaderManager):
     bufferData(Cube::vertexDataSize, sizeof(CubePosColor), &c);
 
     cubeGenerator.setCubeManager(&cubeManager);
+    cubeGenerator.attachListener(element);
 }
 
 CubeModeler::~CubeModeler()

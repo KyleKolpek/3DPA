@@ -5,9 +5,9 @@
 </head>
 <body class="window">
     <div id="sliders">
-        <input type="range" id="red" min="0" max="100" step="1"/>
-        <input type="range" id="green" min="0" max="100" step="1"/>
-        <input type="range" id="blue" min="0" max="100" step="1"/>
+        <input type="range" id="red" min="0" max="1" step=".01"/>
+        <input type="range" id="green" min="0" max="1" step=".01"/>
+        <input type="range" id="blue" min="0" max="1" step=".01"/>
     </div>
 </body>
 </rml>

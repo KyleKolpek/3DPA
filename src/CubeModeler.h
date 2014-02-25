@@ -8,10 +8,13 @@
 #include "CubeGenerator.h"
 #include "GLM/glm.hpp"
 
+class Rocket::Core::Element;
+
 class CubeModeler: public SelfishModel, public Updatable
 {
 public:
-    CubeModeler(ShaderManager &shaderManager);
+    CubeModeler(ShaderManager &shaderManager,
+                Rocket::Core::Element *element);
     ~CubeModeler();
 
     void handleInput(InputMap &input);

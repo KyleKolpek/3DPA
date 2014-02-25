@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
+#include <string>
 #include <SDL.h>
 #include <Rocket/Core.h>
 #include <Rocket/SDLCore.h>
@@ -128,13 +129,6 @@ int main(int argc, char *argv[])
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glViewport(0, 0, 1024, 1024);
 
-    // Setup scene
-    CubeModeler cm(sm);
-
-    Renderer r;
-    r.addViewport(&vp);
-    r.addModel(&cm);
-    
     ////////////////////////////////////////////////////////////////////////////
     // Set up Rocket
     ////////////////////////////////////////////////////////////////////////////
@@ -183,6 +177,15 @@ int main(int argc, char *argv[])
         document->RemoveReference();
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+    // Set up scene
+    ////////////////////////////////////////////////////////////////////////////
+    CubeModeler cm(sm, document);
+
+    Renderer r;
+    r.addViewport(&vp);
+    r.addModel(&cm);
+    
     ////////////////////////////////////////////////////////////////////////////
     // Set up input
     ////////////////////////////////////////////////////////////////////////////
@@ -280,6 +283,8 @@ int main(int argc, char *argv[])
         // Rocket Updates
         rocketContext->Update();
         rocketContext->Render();
+
+        // THIS IS HOW TO GET VALUES FROM ELEMENTS
 
         while(GLenum e = glGetError())
         {
