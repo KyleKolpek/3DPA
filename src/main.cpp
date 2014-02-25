@@ -2,15 +2,14 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
-#include <stdgl.h>
 #include <SDL.h>
 #include <Rocket/Core.h>
 #include <Rocket/SDLCore.h>
 #include <Rocket/Controls.h>
 #include <Rocket/Debugger.h>
+#include "stdgl.h"
 #include "Config.h"
-#include "CubeManager.h"
-#include "CubeGenerator.h"
+#include "CubeModeler.h"
 #include "InputMapper.h"
 #include "Renderer.h"
 #include "Viewport.h"
@@ -114,13 +113,14 @@ int main(int argc, char *argv[])
     }
 
     // Disable Culling
-    glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
  
     /* This makes our buffer swap syncronized with the monitor's vertical refresh */
     SDL_GL_SetSwapInterval(1);
@@ -129,40 +129,11 @@ int main(int argc, char *argv[])
     glViewport(0, 0, 1024, 1024);
 
     // Setup scene
-    CubeManager cm;
-    cm.setShaderManager(&sm);
-    Cube a, b, c;
-    a.x = 0;
-    a.y = 0;
-    a.z = 0;
-    a.red   = 1.0;
-    a.green = 0.0;
-    a.blue  = 0.0;
-    b.x = 2;
-    b.y = 2;
-    b.z = -1;
-    b.red   = 0.0;
-    b.green = 1.0;
-    b.blue  = 0.0;
-    c.x = -2;
-    c.y = 0;
-    c.z = 1;
-    c.red   = 0.0;
-    c.green = 0.0;
-    c.blue  = 1.0;
-
-    cm.insert(a);
-    cm.insert(b);
-    cm.insert(c);
-
-    CubeGenerator cg;
-    cg.cubeManager = &cm;
-    cg.setShaderManager(&sm);
+    CubeModeler cm(sm);
 
     Renderer r;
     r.addViewport(&vp);
     r.addModel(&cm);
-    r.addModel(&cg);
     
     ////////////////////////////////////////////////////////////////////////////
     // Set up Rocket
@@ -217,7 +188,7 @@ int main(int argc, char *argv[])
     ////////////////////////////////////////////////////////////////////////////
     mapper.pushContext("maincontext");
     mapper.addCallback(&vp.getCurrentCamera(), 0);
-    mapper.addCallback(&cg, 0);
+    mapper.addCallback(&cm, 0);
 
     ////////////////////////////////////////////////////////////////////////////
     // GAME LOOP
@@ -303,7 +274,7 @@ int main(int argc, char *argv[])
         mapper.dispatch();
         mapper.reset();
 
-        cg.moveTo(vp.getCurrentCamera().getAt());
+        cm.setActiveCubePos(vp.getCurrentCamera().getAt());
         r.render();
 
         // Rocket Updates

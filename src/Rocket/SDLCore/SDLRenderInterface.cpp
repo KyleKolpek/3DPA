@@ -226,7 +226,7 @@ bool SDLRenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture_handle
         source.CString(),
         SOIL_LOAD_AUTO,
         SOIL_CREATE_NEW_ID,
-        SOIL_FLAG_MIPMAPS |
+        SOIL_FLAG_GL_MIPMAPS |
         SOIL_FLAG_NTSC_SAFE_RGB |
         SOIL_FLAG_COMPRESS_TO_DXT);
 

@@ -40,14 +40,29 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Cube)
 # Compile CubeGenerator
 add_library(CubeGenerator
             CubeGenerator.cpp)
-target_link_libraries(CubeGenerator Cube CubeManager InputMapper Drawable Updatable)
+target_link_libraries(CubeGenerator Cube CubeManager)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeGenerator) 
 
 # Compile CubeManager
 add_library(CubeManager
             CubeManager.cpp)
-target_link_libraries(CubeManager Cube Drawable MortonNumber)
+target_link_libraries(CubeManager Cube MortonNumber)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeManager) 
+
+# Compile CubeModeler
+add_library(CubeModeler
+            CubeModeler.cpp)
+target_link_libraries(CubeModeler CubeGenerator CubeManager Updatable Model)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} CubeModeler) 
+
+# Compile Model
+add_library(Model
+            ModelData.cpp
+            Model.cpp
+            SelfishModel.cpp
+            SelflessModel.cpp)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} Model)
+target_link_libraries(Model SOIL2)
 
 # Compile SOIL
 add_subdirectory(SOIL2)
@@ -55,11 +70,10 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} SOIL2)
 
 # Compile Rocket
 add_subdirectory(Rocket)
-set(INTERNAL_LIBS ${INTERNAL_LIBS}
-    RocketCore
-    RocketDebugger
-    RocketControls
-    SDLCore)
+set(INTERNAL_LIBS ${INTERNAL_LIBS} RocketCore
+                                   RocketDebugger
+                                   RocketControls
+                                   SDLCore)
 
 add_subdirectory(Luatable)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Luatable)
@@ -73,7 +87,7 @@ set(INTERNAL_LIBS ${INTERNAL_LIBS} Viewport)
 # Compile Renderer
 add_library(Renderer
             Renderer.cpp)
-target_link_libraries(Renderer CubeManager Viewport)
+target_link_libraries(Renderer Model Viewport)
 set(INTERNAL_LIBS ${INTERNAL_LIBS} Renderer)
 
 # Compile Input

@@ -4,10 +4,9 @@
 #include <map>
 #include <cstdint>
 #include "Cube.h"
-#include "Drawable.h"
 #include "MortonNumber.h"
 
-class CubeManager: public Drawable
+class CubeManager
 {
 public:
     CubeManager();
@@ -17,21 +16,12 @@ public:
     void clear();
     void erase(int x, int y, int z);
     bool insert(const Cube &cube);
-    void populateModelData();
-    void draw(GLuint program);
-    GLuint loadShader();
+    const std::map<MortonNumber, Cube>& getCubeMap();
+    bool wasUpdated;
 
 private:
-    struct CubePosColor
-    {
-        float position[3];
-        float color[3];
-    };
     MortonNumber makeKey(int x, int y, int z);
     std::map<MortonNumber, Cube> cubeMap;
-    GLuint vertexBuffer;
-    GLuint instanceBuffer;
-    bool needsUpdated;
 };
 
 #endif

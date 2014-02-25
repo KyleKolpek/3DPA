@@ -1,130 +1,26 @@
 #include <cmath>
-#include "SOIL/SOIL.h"
 #include "Model.h"
 #include "ModelData.h"
 #include "GLM/glm.hpp"
 #include "GLM/gtx/compatibility.hpp"
 
+#define DEFAULT_BUFFER_SIZE 4
+
 using namespace std;
 
-Model::Model(ModelData *modelData):
+Model::Model():
     position(0.0),
     scaleFactor(1.0),
     rotation(0.0),
-    radius(0.5),
-    vertexCount(0),
-    vertexBuffer(NULL),
-    texture(NULL),
     modelMatrix(1.0),
-    modelData(modelData)
+    vertexBufferSize(0),
+    vertexDataSize(0),
+    instanceCount(1)
 {
 }
 
 Model::~Model()
 {
-    delete modelData;
-}
-
-void Model::draw()
-{
-    
-/*
-    // Store a ShaderManager over a program
-    GLuint program = shaderManager->getProgram(2, "phongTex.vert",
-        "phongTexPtLights.frag");
-    glUseProgram(program);
-
-    GLint mvLoc   = glGetUniformLocation(program, "modelView");
-    GLint nmvLoc  = glGetUniformLocation(program, "normalModelView");
-    GLint projLoc = glGetUniformLocation(program, "projection");
-    GLint texLoc  = glGetUniformLocation(program, "texture");
-
-    glm::mat4 MV   = camera->getViewMatrix() * modelMatrix;
-    glm::mat4 proj = camera->getProjectionMatrix();
-
-    // TODO: Error check here.
-    if(mvLoc != -1)
-    {
-        glUniformMatrix4fv(mvLoc, 1, GL_FALSE, &MV[0][0]);
-    }
-    else
-    {
-        cerr << "Error: Cannot find modelView location" << endl;
-        return;
-    }
-
-    if(nmvLoc != -1)
-    {
-        glUniformMatrix4fv(nmvLoc, 1, GL_FALSE,
-            &glm::transpose(glm::inverse(MV))[0][0]);
-    }
-    else
-    {
-        cerr << "Error: Cannot find normalModelView location" << endl;
-        return;
-    }
-    
-    if(projLoc != -1)
-    {
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &proj[0][0]);
-    }
-    else
-    {
-        cerr << "Error: Cannot find projection location" << endl;
-        return;
-    }
-
-    if(texLoc != -1)
-    {
-        glUniform1i(texLoc, 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, modelData->textures[0]);
-    }
-    else
-    {
-        cerr << "Error: Cannot find texture location" << endl;
-        return;
-    }
-
-    GLuint vertexPosLoc = glGetAttribLocation(program, "vertexPosition");
-    GLuint vertexNormalLoc = glGetAttribLocation(program, "vertexNormal");
-    GLuint vertexTexCoordLoc = glGetAttribLocation(program, "vertexTexCoord");
-
-    if(vertexPosLoc == -1)
-    {
-        cerr << "Error: Cannot find vertexPosition location" << endl;
-        return;
-    }
-    if(vertexNormalLoc == -1)
-    {
-        cerr << "Error: Cannot find vertexNormal location" << endl;
-        return;
-    }
-    if(vertexTexCoordLoc == -1)
-    {
-        cerr << "Error: Cannot find vertexTexCoord location" << endl;
-        return;
-    }
-
-    glEnableVertexAttribArray(vertexPosLoc);
-    glEnableVertexAttribArray(vertexNormalLoc);
-    glEnableVertexAttribArray(vertexTexCoordLoc);
-
-    glBindBuffer(GL_ARRAY_BUFFER, modelData->vertexBuffer);
-    // TODO: Change this to be described by the ModelData struct
-    glVertexAttribPointer(vertexPosLoc, 3, GL_FLOAT, GL_FALSE,
-        8 * sizeof(float), 0);
-    glVertexAttribPointer(vertexNormalLoc, 3, GL_FLOAT, GL_TRUE,
-        8 * sizeof(float), (void *)(3 * sizeof(float)));
-    glVertexAttribPointer(vertexTexCoordLoc, 2, GL_FLOAT, GL_TRUE,
-        8 * sizeof(float), (void *)(6 * sizeof(float)));
-
-    // TODO: Change GL_TRIANGLES to account for modelData->vertexType
-    glDrawArrays(GL_TRIANGLES, 0, modelData->vertexCount);
-    glDisableVertexAttribArray(vertexPosLoc);
-    glDisableVertexAttribArray(vertexNormalLoc);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glUseProgram(0);*/
 }
 
 glm::vec3 Model::getPosition()
@@ -132,7 +28,7 @@ glm::vec3 Model::getPosition()
     return position;
 }
 
-glm::vec4 const& getModelMatrix()
+glm::mat4 const& Model::getModelMatrix()
 {
     return modelMatrix;
 }
@@ -146,7 +42,6 @@ void Model::setPosition(glm::vec3 const &position)
 void Model::setScale(float scale)
 {
     this->scaleFactor = scale;
-    this->radius = 0.5 * scale; //TODO: fix magic numbers
     createModelMatrix();
 }
 
@@ -176,7 +71,7 @@ void Model::scale(float factor)
 
 void Model::rotate(float degrees)
 {
-    this->rotation += degrees;
+    this->rotation += fmod(degrees, 360);
     createModelMatrix();
 }
 
@@ -196,4 +91,62 @@ void Model::createModelMatrix()
                         -glm::sin(theta), 0.0, glm::cos(theta), 0.0,
                         0.0, 0.0, 0.0, 1.0);
     modelMatrix = translationMat * scaleMat * rotateMat;
+}
+
+int Model::getVertexBufferSize()
+{
+    return vertexBufferSize;
+}
+
+int Model::getVertexDataSize()
+{
+    return vertexDataSize;
+}
+
+void Model::bufferData(GLintptr offset,
+                       GLsizeiptr size,
+                       const GLvoid * data)
+{
+    GLuint neededSize = offset + size;
+    GLuint newSize = vertexBufferSize ? vertexBufferSize : DEFAULT_BUFFER_SIZE;
+
+    // Automatically expand the vertex buffer as needed.
+    while(newSize < neededSize)
+    {
+        newSize *= 2;
+    }
+    expandVertexBuffer(newSize);
+
+    // Buffer the data.
+    glBindBuffer(GL_ARRAY_BUFFER, modelData.vertexBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    vertexDataSize = neededSize;
+}
+
+void Model::expandVertexBuffer(GLuint newSize)
+{
+    // Don't expand if we don't need to.
+    if(vertexBufferSize >= newSize)
+    {
+        return;
+    }
+    GLuint newBuffer;
+    vertexBufferSize = newSize;
+
+    glGenBuffers(1, &newBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, newBuffer);
+    glBindBuffer(GL_COPY_READ_BUFFER, modelData.vertexBuffer);
+
+    // TODO: Change GL_DYNAMIC_DRAW to a variable somewhere (ModelData?).
+    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, NULL, GL_DYNAMIC_DRAW);
+    glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0,
+                        vertexDataSize);
+    glDeleteBuffers(1, &modelData.vertexBuffer);
+
+    modelData.vertexBuffer = newBuffer;
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_COPY_READ_BUFFER, 0);
 }

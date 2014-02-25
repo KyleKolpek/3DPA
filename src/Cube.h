@@ -12,9 +12,11 @@ public:
     float red;
     float green;
     float blue;
-    int size;
+    float alpha;
+    unsigned int size;
 
     static float vertexData[];
+    static int vertexDataSize;
     static int vertexCount;
 };                                                    
                                                       

@@ -3,23 +3,18 @@
 
 #include <string>
 #include "stdgl.h"
-#include "Drawable.h"
 #include "GLM/glm.hpp"
+#include "ModelData.h"
 
-class ModelData;
 
 /***************************************************************************//**
  * A drawable class that can undergo most affine transformations.
- * This is one of the more basic drawable classes.
  ******************************************************************************/
-class Model: public Drawable
+class Model
 {
 public:
-    Model(ModelData *modelData);
-    virtual ~Model();
-
-    // Inherited methods
-    virtual void draw();
+    Model();
+    virtual ~Model() = 0;
 
     /***********************************************************************//**
      * Retrieve the model's position in world space.
@@ -33,7 +28,7 @@ public:
      * \return  
      *     The model matrix.
      **************************************************************************/
-    glm::vec4 const& getModelMatrix();
+    glm::mat4 const& getModelMatrix();
 
     /***********************************************************************//**
      * Sets the model's position in world/dungeon space.
@@ -74,16 +69,57 @@ public:
 
     /***********************************************************************//**
      * Scales the model by a fmodel.
-     * \param[in] fmodel
-     *     The fmodel to multiply the scale by.
+     * TODO: Expand to quaternion rotation or something.
+     * \param[in] degrees
+     *     The number of degrees to rotate by around the Y axis.
      **************************************************************************/
     void rotate(float degrees);
 
-protected:
     /***********************************************************************//**
-     * modelData stores OpenGL vertex pointers and attributes.
+     * Returns the current size of the data stored in the vertex buffer in
+     * bytes.
      **************************************************************************/
-     ModelData *modelData;
+    int getVertexDataSize();
+
+    /***********************************************************************//**
+     * Returns the current size of the vertex buffer in bytes.
+     **************************************************************************/
+    int getVertexBufferSize();
+
+    /***********************************************************************//**
+     * The OpenGL vertex pointers and attributes.
+     **************************************************************************/
+    ModelData modelData;
+
+    /***********************************************************************//**
+     * Allows for substituting buffer data into the model's vertex buffer. This
+     * method allows for automatic growth of the vertex buffer.
+     * \param[in] offset
+     *     The offset into the buffer where the data substitution will begin.
+     * \param[in] size
+     *     The size in bytes of the data to be replaced.
+     * \param[in] data
+     *     A pointer to the dat to be substituted into the vertex buffer.
+     **************************************************************************/
+    void bufferData(GLintptr offset, GLsizeiptr size, const GLvoid * data);
+
+    /***********************************************************************//**
+     * Holds the number of instances to be drawn.
+     **************************************************************************/
+    GLuint instanceCount;
+private:
+    /***********************************************************************//**
+     * Expands the size of the vertex buffer to newSize, maintaining all data.
+     * \param[in] newSize
+     *     The new size of the vertex buffer.
+     **************************************************************************/
+    void expandVertexBuffer(GLuint newSize);
+
+    /***********************************************************************//**
+     * Creates the model's model view matrix. This enables us to avoid repeat 
+     * calculations.
+     **************************************************************************/
+    void createModelMatrix();
 
     /***********************************************************************//**
      * The world position of the model.
@@ -96,7 +132,8 @@ protected:
     float scaleFactor;
 
     /***********************************************************************//**
-     * The rotation of the model.
+     * The rotation of the model in degrees.
+     * TODO: Expand to quaternion rotation or something.
      **************************************************************************/    
     float rotation;
 
@@ -106,11 +143,14 @@ protected:
     glm::mat4 modelMatrix;
 
     /***********************************************************************//**
-     * Creates the model's model view matrix. This enables us to avoid repeat 
-     * calculations.
+     * Stores the number of bytes currently stored in the vertex buffer.
      **************************************************************************/
-    void createModelMatrix();
+    GLuint vertexDataSize;
 
+    /***********************************************************************//**
+     * Stores the size of the buffer currently allocated on the GPU.
+     **************************************************************************/
+    GLuint vertexBufferSize;
 };
 
 #endif
