@@ -24,27 +24,23 @@ void CubeGenerator::moveTo(const glm::vec3 &position)
 
 void CubeGenerator::addCube()
 {
-    Cube c;
-    c.x = glm::floor(position.x);
-    c.y = glm::floor(position.y);
-    c.z = glm::ceil(position.z);
-
-    c.red    = float(rand())/float(RAND_MAX);
-    c.green  = float(rand())/float(RAND_MAX);
-    c.blue   = float(rand())/float(RAND_MAX);
-    c.alpha  = 1.0f;
+    Cube c ={static_cast<int>(glm::floor(position.x)),
+             static_cast<int>(glm::floor(position.y)),
+             static_cast<int>(glm::ceil(position.z)),
+             float(rand())/float(RAND_MAX),
+             float(rand())/float(RAND_MAX),
+             float(rand())/float(RAND_MAX),
+             1.0f,
+             1};
 
     cubeManager->insert(c);
 }
 
 void CubeGenerator::removeCube()
 {
-    Cube c;
-    c.x = glm::floor(position.x);
-    c.y = glm::floor(position.y);
-    c.z = glm::ceil(position.z);
-
-    cubeManager->erase(c.x, c.y, c.z);
+    cubeManager->erase(glm::floor(position.x),
+                       glm::floor(position.y),
+                       glm::ceil(position.z));
 }
 
 glm::vec3 CubeGenerator::getPosition()
