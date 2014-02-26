@@ -1,22 +1,17 @@
 body
 {
-    width: 256px;
-    height: 63px;
-
+    position:relative;
+    top:32px;
 	font-family: Delicious;
 	font-weight: normal;
 	font-style: normal;
 	font-size: 15;
 	color: white;
-    background-color:#aaa;
     display: block;
 }
 
 body.window
 {
-    position:absolute;
-    padding:4px;
-    top:32px;
 }
 
 div
@@ -26,6 +21,12 @@ div
 
 div#sliders 
 {
+    float:left;
+    padding:4px;
+    background-color:#aaa;
+    width: 256px;
+    height: 63px;
+    margin:0px;
 }
 div#sliders input.range
 {
@@ -73,4 +74,14 @@ div#sliders input#blue slidertrack
     margin:3px 0px 2px 0px;
     height:16px;
     background-image: images/MenuSprites.png 0px 32px 256px 47px;
+}
+
+div#preview
+{
+    float:left;
+    padding:4px;
+    margin:0px 4px;
+    width:64px;
+    height:64px;
+    background-color:#000;
 }

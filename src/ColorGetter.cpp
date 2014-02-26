@@ -1,4 +1,5 @@
-#include <iostream>
+#include <sstream>
+#include <string>
 #include "ColorGetter.h"
 
 ColorGetter::ColorGetter():
@@ -41,4 +42,14 @@ void ColorGetter::ProcessEvent(Rocket::Core::Event& event)
     {
         blue = event.GetParameter<float>("value", 0.0);
     }
+    std::stringstream ss;
+    ss << "rgb(" << (int)(red*255) << ","
+                 << (int)(green*255) << ","
+                 << (int)(blue*255) << ")";
+    preview->SetProperty("background-color", ss.str().c_str());
+}
+
+void ColorGetter::setPreviewElement(Rocket::Core::Element *element)
+{
+    preview = element;
 }

@@ -9,5 +9,8 @@
         <input type="range" id="green" min="0" max="1" step=".01"/>
         <input type="range" id="blue" min="0" max="1" step=".01"/>
     </div>
+    <div id="preview">
+    &nbsp;
+    </div>
 </body>
 </rml>

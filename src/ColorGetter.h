@@ -9,6 +9,7 @@ public:
     ColorGetter();
     ~ColorGetter();
     virtual void ProcessEvent(Rocket::Core::Event& event);
+    void setPreviewElement(Rocket::Core::Element *element);
     float getRed();
     float getGreen();
     float getBlue();
@@ -16,6 +17,7 @@ private:
     float red;
     float green;
     float blue;
+    Rocket::Core::Element *preview;
 };
 
 #endif

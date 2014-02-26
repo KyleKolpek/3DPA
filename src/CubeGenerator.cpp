@@ -31,9 +31,6 @@ void CubeGenerator::addCube()
              colorGetter.getRed(),
              colorGetter.getGreen(),
              colorGetter.getBlue(),
-             /*float(rand())/float(RAND_MAX),
-             float(rand())/float(RAND_MAX),
-             float(rand())/float(RAND_MAX),*/
              1.0f,
              1};
 
@@ -59,6 +56,7 @@ void CubeGenerator::setCubeManager(CubeManager *cubeManager)
 
 void CubeGenerator::attachListener(Rocket::Core::Element *element)
 {
+        colorGetter.setPreviewElement(element->GetElementById("preview"));
         static_cast<Rocket::Controls::ElementFormControlInput *>
                     (element->GetElementById("red"))->
                     AddEventListener("change", &colorGetter);
