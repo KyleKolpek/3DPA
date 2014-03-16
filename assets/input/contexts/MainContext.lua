@@ -16,6 +16,7 @@ local context = {
         [RawButton.RALT] = State.ALT_DOWN,
         [RawButton.LCTRL] = State.CTRL_DOWN,
         [RawButton.RCTRL] = State.CTRL_DOWN,
+        [RawButton.X]     = State.MOVE_DISCRETELY,
     },
     actions = {
         [RawButton.LEFT_MOUSE] = Action.ADD_CUBE,
