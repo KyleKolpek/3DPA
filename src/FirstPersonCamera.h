@@ -18,6 +18,7 @@ public:
     void moveTowardsAt(float distance);
     void strafeRight(float distance);
 
+    void moveUpDiscretely(int units);
     void moveForwardDiscretely(int units);
     void strafeRightDiscretely(int units);
 
@@ -25,6 +26,7 @@ public:
 private:
     glm::quat rotation;
     bool moveDiscretely;
+    uint8_t lastMoved;
 };
 
 #endif
