@@ -1,6 +1,7 @@
 Action =
 {
     ADD_CUBE             = 0x10000001,
+    MOVE_DISCRETELY      = 0x10000002,
 }
 
 State =
@@ -15,7 +16,6 @@ State =
     SHIFT_DOWN            = 0x20000008,
     ALT_DOWN              = 0x20000009,
     CTRL_DOWN             = 0x20000010,
-    MOVE_DISCRETELY       = 0x20000011,
 };
 
 Range = 

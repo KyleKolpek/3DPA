@@ -18,9 +18,13 @@ public:
     void moveTowardsAt(float distance);
     void strafeRight(float distance);
 
+    void moveForwardDiscretely(int units);
+    void strafeRightDiscretely(int units);
+
     virtual void handleInput(InputMap &input);
 private:
     glm::quat rotation;
+    bool moveDiscretely;
 };
 
 #endif

@@ -7,6 +7,7 @@ namespace Input
 enum Action
 {
     ACTION_ADD_CUBE             = 0x10000001,
+    ACTION_MOVE_DISCRETELY      = 0x10000002,
 };
 
 enum State
@@ -21,7 +22,6 @@ enum State
     STATE_SHIFT_DOWN            = 0x20000008,
     STATE_ALT_DOWN              = 0x20000009,
     STATE_CTRL_DOWN             = 0x20000010,
-    STATE_MOVE_DISCRETELY       = 0x20000011,
 };
 
 enum Range
